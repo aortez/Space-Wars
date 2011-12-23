@@ -1,0 +1,30 @@
+#include <QDockWidget>
+#include "BoxOfShapes.h"
+#include "Circle.h"
+#include "InteractiveBoxOfShapes.h"
+#include "mainwindow.h"
+#include "Point2f.h"
+#include "ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi( this );
+
+    BoxOfShapes* display = new  InteractiveBoxOfShapes( this, 400, 400 );
+    this->setCentralWidget( display );
+
+    shared_ptr< Shape > circle(
+                new Circle(
+                    Point2f( 0, 0 ),
+                    0.1,
+                    Vec3f( 1, 0, 0 ) ) );
+
+    display->AddShape( circle );
+}
+
+MainWindow::~MainWindow( void )
+{
+    delete ui;
+}
