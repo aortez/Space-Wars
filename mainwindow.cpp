@@ -3,8 +3,8 @@
 #include "Circle.h"
 #include "InteractiveBoxOfShapes.h"
 #include "mainwindow.h"
-#include "Point2f.h"
 #include "ui_mainwindow.h"
+#include "Vec2f.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,12 +12,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi( this );
 
-    BoxOfShapes* display = new  InteractiveBoxOfShapes( this, 400, 400 );
+    BoxOfShapes* display = new  InteractiveBoxOfShapes( this, 600, 600 );
     this->setCentralWidget( display );
 
     shared_ptr< Shape > circle(
                 new Circle(
-                    Point2f( 0, 0 ),
+                    Vec2f( 0, 0 ),
                     0.1,
                     Vec3f( 1, 0, 0 ) ) );
 

@@ -1,20 +1,17 @@
 #include <cmath>
 #include <QGLWidget>
 #include "Circle.h"
-#include "Point2f.h"
+#include "Vec2f.h"
 
 Circle::Circle( void )
     : Shape(),
-      mColor(),
-      mRadius( 0 )
+      mColor()
 {
 }
 
-Circle::Circle( const Point2f center, const float radius, const Vec3f color )
-    : Shape(),
-      mCenter( center ),
-      mColor( color ),
-      mRadius( radius )
+Circle::Circle( const Vec2f center, const float radius, const Vec3f color )
+    : Shape( center, radius ),
+      mColor( color )
 {
 }
 
@@ -32,4 +29,15 @@ void Circle::Draw( void ) const
         glVertex3f( x, y, 0.0f);
     }
     glEnd();
+}
+
+
+bool Circle::Intersects( const Shape& s ) const
+{
+    return s.Intersects( *this );
+}
+
+bool Circle::Intersects( const Circle& c ) const
+{
+    return mCenter.distanceTo( c.mCenter ) <= ( mRadius + c.mRadius );
 }

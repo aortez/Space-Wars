@@ -1,6 +1,6 @@
 #pragma once
-#include "Point2f.h"
 #include "Shape.h"
+#include "Vec2f.h"
 #include "Vec3f.h"
 
 class Circle
@@ -9,13 +9,15 @@ class Circle
 public:
     Circle( void );
 
-    Circle( Point2f center, float radius, const Vec3f color );
+    Circle( Vec2f center, float radius, const Vec3f color );
+
+    virtual bool Intersects( const Shape& s ) const;
+
+    virtual bool Intersects( const Circle& c ) const;
 
 protected:
     virtual void Draw( void ) const;
 
 private:
-    Point2f mCenter;
     Vec3f mColor;
-    float mRadius;
 };

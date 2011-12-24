@@ -15,6 +15,10 @@ public:
 
     void AddShape( std::shared_ptr< Shape > shape );
 
+
+public slots:
+    void doPhysics( void );
+
 protected:
     int heightForWidth( int w ) { return w; }
 

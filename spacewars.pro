@@ -17,8 +17,9 @@ SOURCES += \
     Circle.cpp \
     BoxOfShapes.cpp \
     Shape.cpp \
-    Point2f.cpp \
-    InteractiveBoxOfShapes.cpp
+    InteractiveBoxOfShapes.cpp \
+    Vec3f.cpp \
+    Vec2f.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -26,9 +27,9 @@ HEADERS += \
     BoxOfShapes.h \
     Shape.h \
     SharedPtr.h \
-    Point2f.h \
     Vec3f.h \
-    InteractiveBoxOfShapes.h
+    InteractiveBoxOfShapes.h \
+    Vec2f.h
 
 FORMS += mainwindow.ui
 
