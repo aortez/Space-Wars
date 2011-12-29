@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <QList>
 #include <QTimer>
 #include "BoxOfShapes.h"
@@ -28,7 +29,7 @@ void BoxOfShapes::AddShape( std::shared_ptr< Shape > shape )
 void BoxOfShapes::doPhysics( void )
 {
     const float deltaT = 0.020;
-    const float g = .986;
+    const float g = .0986;
 
     // move shapes
     for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
@@ -46,6 +47,7 @@ void BoxOfShapes::doPhysics( void )
         x += xv;
         y += yv;
 
+        // bounce off of walls
         const float damping = 0.8;
         if ( y + r >= 1 )
         {
@@ -56,6 +58,16 @@ void BoxOfShapes::doPhysics( void )
         {
             y = -1 + r;
             yv = -yv * damping;
+        }        
+        if ( x + r >= 1 )
+        {
+            x = 1 - r;
+            xv = -xv * damping;
+        }
+        else if ( x - r <= -1 )
+        {
+            x = -1 + r;
+            xv = -xv * damping;
         }
     }
 
@@ -68,14 +80,7 @@ void BoxOfShapes::doPhysics( void )
         for( auto i = toCollide.begin(); i != toCollide.end(); ++i )
         {
             Shape& b = *(*i);
-            if ( a.Intersects( b ) )
-            {
-                a.mVelocity.X = -a.mVelocity.X;
-                a.mVelocity.Y = -a.mVelocity.Y;
-
-                b.mVelocity.X = -b.mVelocity.X;
-                b.mVelocity.Y = -b.mVelocity.Y;
-            }
+            a.Collide( b );
         }
 
         // after colliding 'a' with every other shape, take it out of our 'toCollide' list

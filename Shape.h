@@ -10,6 +10,10 @@ public:
 
     virtual ~Shape( void );
 
+    virtual void Collide( Shape& s ) = 0;
+
+    virtual void Collide( Circle& c ) = 0;
+
     virtual bool Intersects( const Shape& s ) const = 0;
 
     virtual bool Intersects( const Circle& c ) const = 0;

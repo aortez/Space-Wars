@@ -31,6 +31,38 @@ void Circle::Draw( void ) const
     glEnd();
 }
 
+void Circle::Collide( Shape& s )
+{
+    if ( this != &s && this->Intersects( s ) )
+    {
+        s.Collide( *this );
+    }
+}
+
+void Circle::Collide( Circle& b )
+{
+    Circle& a = *this;
+    const float m1 = a.mRadius;
+    const float m2 = b.mRadius;
+
+    Vec2f& v1 = a.mVelocity;
+    Vec2f& v2 = b.mVelocity;
+
+    // elastic collision
+    Vec2f v1prime;
+    v1prime.X = ( v1.X * ( m1 - m2 ) + 2 * ( m2 * v2.X ) ) / ( m1 + m2 );
+    v1prime.Y = ( v1.Y * ( m1 - m2 ) + 2 * ( m2 * v2.Y ) ) / ( m1 + m2 );
+
+    Vec2f v2prime;
+    v2prime.X = ( v2.X * ( m2 - m1 ) + 2 * ( m1 * v1.X ) ) / ( m1 + m2 );
+    v2prime.Y = ( v2.Y * ( m2 - m1 ) + 2 * ( m1 * v1.Y ) ) / ( m1 + m2 );
+
+    a.mVelocity = v1prime;
+    b.mVelocity = v2prime;
+
+    // if a.X > b.X then shift a left and b right
+    // so that they no longer overlap
+}
 
 bool Circle::Intersects( const Shape& s ) const
 {

@@ -10,10 +10,20 @@ public:
     virtual ~InteractiveBoxOfShapes( void );
 
 protected:
-    void mousePressEvent ( QMouseEvent* event );
+    void mousePressEvent( QMouseEvent* event );
 
-    //void QWidget::mouseReleaseEvent ( QMouseEvent * event );
+    void mouseReleaseEvent( QMouseEvent* event );
 
-//    void QWidget::moveEvent ( QMoveEvent * event );
+    void mouseMoveEvent( QMouseEvent* event );
+
+    Vec2f widgetPointToVec( const QPointF& p ) const;
+
+    virtual void Render( void );
+
+    QPoint mButtonCurrent;
+
+    QPoint mButtonDown;
+
+    bool mIsButtonDown;
 };
 

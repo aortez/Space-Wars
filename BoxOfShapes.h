@@ -26,7 +26,7 @@ protected:
 
     void paintGL( void );
 
-    void Render( void );
+    virtual void Render( void );
 
     void resizeGL( int width, int height );
 

@@ -11,6 +11,10 @@ public:
 
     Circle( Vec2f center, float radius, const Vec3f color );
 
+    virtual void Collide( Shape& s );
+
+    virtual void Collide( Circle& c );
+
     virtual bool Intersects( const Shape& s ) const;
 
     virtual bool Intersects( const Circle& c ) const;
