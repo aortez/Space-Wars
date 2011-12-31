@@ -8,7 +8,7 @@ BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     mHeight( height ),
     mWidth( width )
 {
-    const float deltaT = 0.020;
+    const float deltaT = 1.0 / 10;
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( doPhysics() ) );
     timer->start( deltaT * 1000 );
@@ -28,6 +28,21 @@ void BoxOfShapes::AddShape( std::shared_ptr< Shape > shape )
 
 void BoxOfShapes::doPhysics( void )
 {
+    // collide shapes
+    auto toCollide = mShapes;
+    while( !toCollide.empty() )
+    {
+        // every shape 'a' must be collided with every other shape 'b'
+        Shape& a = **toCollide.begin();
+        for( auto i = toCollide.begin(); i != toCollide.end(); ++i )
+        {
+            Shape& b = *(*i);
+            a.Collide( b );
+        }
+
+        // after colliding 'a' with every other shape, take it out of our 'toCollide' list
+        toCollide.pop_front();
+    }
     const float deltaT = 0.020;
     const float g = .0986;
 
@@ -58,7 +73,7 @@ void BoxOfShapes::doPhysics( void )
         {
             y = -1 + r;
             yv = -yv * damping;
-        }        
+        }
         if ( x + r >= 1 )
         {
             x = 1 - r;
@@ -71,21 +86,7 @@ void BoxOfShapes::doPhysics( void )
         }
     }
 
-    // collide shapes
-    auto toCollide = mShapes;
-    while( !toCollide.empty() )
-    {
-        // every shape 'a' must be collided with every other shape 'b'
-        Shape& a = **toCollide.begin();
-        for( auto i = toCollide.begin(); i != toCollide.end(); ++i )
-        {
-            Shape& b = *(*i);
-            a.Collide( b );
-        }
 
-        // after colliding 'a' with every other shape, take it out of our 'toCollide' list
-        toCollide.pop_front();
-    }
     update();
 }
 
