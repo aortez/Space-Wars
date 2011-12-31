@@ -1,1 +1,22 @@
 This project is currently just a doodle.
+
+The current plan is:
+M1-1. Implement good physics for circle/circle case.
+M1-2. Implement good physics for circle/line case (lasers!).
+M1-3. Implement triangle and recursive subdivision into hierarchy of circles.
+M1-4. Implement complex objects composed of a hierarchy of triangles.
+M1-5. Implement collisions between composite objects.
+M1-6. Implement multiple LOD collsions.
+At this point we should have a reasonably efficient 2d physics engine
+
+M2-1. Implement a larger world than the visible viewport.
+M2-2. Add planets (with gravity wells).
+
+TODO:
+particle system
+projectiles
+lasers
+damage system
+planet landing
+space stations?
+asteroids showers
