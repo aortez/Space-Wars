@@ -1,4 +1,5 @@
 #include <cmath>
+#include "rand.h"
 #include "Vec3f.h"
 
 Vec3f::Vec3f( float x, float y, float z )
@@ -17,4 +18,11 @@ float Vec3f::distanceTo( const Vec3f& v ) const
 float& Vec3f::operator[]( int i )
 {
     return mData[ i ];
+}
+
+void Vec3f::rand( void )
+{
+    X = rng();
+    Y = rng();
+    Z = rng();
 }

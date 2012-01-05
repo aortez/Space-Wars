@@ -2,13 +2,18 @@
 #include <QList>
 #include <QTimer>
 #include "BoxOfShapes.h"
+#include "Circle.h"
+#include "rand.h"
+#include "Vec3f.h"
+using namespace std;
+
+const float deltaT = 1.0 / 60;
 
 BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     QGLWidget( parent ),
     mHeight( height ),
     mWidth( width )
 {
-    const float deltaT = 1.0 / 10;
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( doPhysics() ) );
     timer->start( deltaT * 1000 );
@@ -26,28 +31,94 @@ void BoxOfShapes::AddShape( std::shared_ptr< Shape > shape )
     mShapes.push_back( shape );
 }
 
-void BoxOfShapes::doPhysics( void )
+list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > toCollide )
 {
-    // collide shapes
-    auto toCollide = mShapes;
+    list< shared_ptr< Shape > > collided;
+
     while( !toCollide.empty() )
     {
         // every shape 'a' must be collided with every other shape 'b'
-        Shape& a = **toCollide.begin();
+        shared_ptr< Shape > a = *toCollide.begin();
         for( auto i = toCollide.begin(); i != toCollide.end(); ++i )
         {
-            Shape& b = *(*i);
-            a.Collide( b );
+            shared_ptr< Shape > b = *i;
+            if ( a.get() != b.get() && a->Intersects( *b ) )
+            {
+                a->Collide( *b );
+                collided.push_back( a );
+                collided.push_back( b );
+            }
         }
 
         // after colliding 'a' with every other shape, take it out of our 'toCollide' list
         toCollide.pop_front();
     }
-    const float deltaT = 0.020;
-    const float g = .0986;
+
+    return collided;
+}
+
+void BoxOfShapes::doPhysics( void )
+{
+    // collide shapes
+    auto toExplode = collide( mShapes );
 
     // move shapes
-    for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
+    move( mShapes );
+
+    // explode exploders
+    auto newShapes = explode( toExplode );
+
+    // remove exploders from world
+    for( auto i = toExplode.begin(); i != toExplode.end(); ++i )
+    {
+        mShapes.remove( *i );
+    }
+
+    mShapes.splice( mShapes.end(), newShapes );
+
+    update();
+}
+
+list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > toExplode )
+{
+    list< shared_ptr< Shape > > newShapes;
+    for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
+    {
+        Shape& s = **i;
+        for ( int y = s.mCenter.Y - s.mRadius; y < s.mCenter.Y + s.mRadius; y++ )
+        {
+            for ( int x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x++ )
+            {
+                if ( rng() > 0.05 )
+                {
+                    Vec3f color;
+                    color.rand();
+                    shared_ptr< Circle > c( new Circle( Vec2f( x, y ), s.mRadius / 2, color ) );
+                    newShapes.push_back( c );
+                }
+            }
+        }
+    }
+    return newShapes;
+}
+
+void BoxOfShapes::initializeGL( void )
+{
+    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+    glClearDepth( 1.0f );
+
+    glEnable( GL_BLEND );
+    glEnable( GL_MULTISAMPLE );
+
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable( GL_LINE_SMOOTH );
+    glShadeModel( GL_SMOOTH );
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+}
+
+void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove )
+{
+    for( auto i = toMove.begin(); i != toMove.end(); ++i )
     {
         float& x = (*i)->mCenter.X;
         float& y = (*i)->mCenter.Y;
@@ -57,6 +128,7 @@ void BoxOfShapes::doPhysics( void )
 
         float& r = (*i)->mRadius;
 
+        const float g = .0986;
         yv -= deltaT * g;
 
         x += xv;
@@ -85,23 +157,6 @@ void BoxOfShapes::doPhysics( void )
             xv = -xv * damping;
         }
     }
-
-
-    update();
-}
-
-void BoxOfShapes::initializeGL( void )
-{
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-    glClearDepth( 1.0f );
-
-    glEnable( GL_BLEND );
-    glEnable( GL_MULTISAMPLE );
-
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-    glShadeModel( GL_SMOOTH );
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 }
 
 void BoxOfShapes::paintGL( void )

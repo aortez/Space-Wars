@@ -20,9 +20,15 @@ public slots:
     void doPhysics( void );
 
 protected:
+    std::list< shared_ptr< Shape > > collide( std::list< shared_ptr< Shape > > toCollide );
+
+    std::list< shared_ptr< Shape > > explode( std::list< shared_ptr< Shape > > toExplode );
+
     int heightForWidth( int w ) { return w; }
 
     void initializeGL( void );
+
+    void move( std::list< shared_ptr< Shape > >& toMove );
 
     void paintGL( void );
 

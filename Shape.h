@@ -14,13 +14,15 @@ public:
 
     virtual void Collide( Circle& c ) = 0;
 
+    virtual void Draw( void ) const = 0;
+
     virtual bool Intersects( const Shape& s ) const = 0;
 
     virtual bool Intersects( const Circle& c ) const = 0;
 
-    virtual void Draw( void ) const = 0;
+    virtual float Mass( void ) const = 0;
 
-    Vec2f mCenter;
+    Vec2f mCenter;    
 
     float mRadius;
 

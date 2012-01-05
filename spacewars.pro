@@ -19,7 +19,8 @@ SOURCES += \
     Shape.cpp \
     InteractiveBoxOfShapes.cpp \
     Vec3f.cpp \
-    Vec2f.cpp
+    Vec2f.cpp \
+    rand.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -29,7 +30,9 @@ HEADERS += \
     SharedPtr.h \
     Vec3f.h \
     InteractiveBoxOfShapes.h \
-    Vec2f.h
+    Vec2f.h \
+    Exploder.h \
+    rand.h
 
 FORMS += mainwindow.ui
 

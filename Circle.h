@@ -19,6 +19,8 @@ public:
 
     virtual bool Intersects( const Circle& c ) const;
 
+    virtual float Mass( void ) const;
+
 protected:
     virtual void Draw( void ) const;
 

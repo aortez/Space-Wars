@@ -8,6 +8,8 @@ struct Vec3f
 
     float& operator[]( int i );
 
+    void rand( void );
+
     float X;
     float Y;
     float Z;

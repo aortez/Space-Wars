@@ -18,9 +18,8 @@ Circle::Circle( const Vec2f center, const float radius, const Vec3f color )
 void Circle::Draw( void ) const
 {
     const int numPoints = mRadius * 1000;
-    glBegin( GL_TRIANGLE_FAN );
+    glBegin( GL_LINE_STRIP );
     glColor3f( mColor.X, mColor.Y, mColor.Z );
-    glVertex3f( mCenter.X, mCenter.Y, 0.0f );
 
     for ( double i = 0; i <= numPoints; i++ )
     {
@@ -33,10 +32,7 @@ void Circle::Draw( void ) const
 
 void Circle::Collide( Shape& s )
 {
-    if ( this != &s && this->Intersects( s ) )
-    {
-        s.Collide( *this );
-    }
+    s.Collide( *this );
 }
 
 void Circle::Collide( Circle& b )
@@ -59,8 +55,8 @@ void Circle::Collide( Circle& b )
     const Vec2f mT = Dn * ( ( mRadius + b.mRadius - delta ) );
 
     //the masses of the two balls
-    const float m1 = mRadius / 10;
-    const float m2 = b.mRadius / 10;
+    const float m1 = Mass();
+    const float m2 = b.Mass();
     const float M = m1 + m2;
 
     // push the circles apart proportional to their mass
@@ -95,4 +91,10 @@ bool Circle::Intersects( const Shape& s ) const
 bool Circle::Intersects( const Circle& c ) const
 {
     return mCenter.distanceTo( c.mCenter ) <= ( mRadius + c.mRadius );
+}
+
+float Circle::Mass( void ) const
+{
+    // a = pi * r^2
+    return mRadius * mRadius * PI;
 }
