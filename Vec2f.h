@@ -43,6 +43,7 @@ Vec2f operator+( Vec2f a, float s );
 
 Vec2f operator-( Vec2f a, const Vec2f& b );
 Vec2f operator-( Vec2f a, float s );
+Vec2f operator-( Vec2f a );
 
 Vec2f operator*( Vec2f a, const Vec2f& b );
 Vec2f operator*( Vec2f a, float s );

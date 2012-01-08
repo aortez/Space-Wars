@@ -14,7 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     BoxOfShapes* display = new  InteractiveBoxOfShapes( this, 600, 600 );
     this->setCentralWidget( display );
-
+    ui->mStatusBar->showMessage( "hello" );
+//    ui->mGridLayout->addWidget( display, 0, 0, 1, 1 );
+    QObject::connect( display, SIGNAL( numShapesChanged( int ) ), this, SLOT( setNumShapes(int) ) );
     shared_ptr< Shape > circle(
                 new Circle(
                     Vec2f( 0, 0 ),
@@ -22,9 +24,16 @@ MainWindow::MainWindow(QWidget *parent) :
                     Vec3f( 1, 0, 0 ) ) );
 
     display->AddShape( circle );
+
+
 }
 
 MainWindow::~MainWindow( void )
 {
     delete ui;
+}
+
+void MainWindow::setNumShapes( int numShapes )
+{
+    ui->mStatusBar->showMessage( tr( "Num shapes: %1" ).arg( numShapes ) );
 }

@@ -19,6 +19,9 @@ public:
 public slots:
     void doPhysics( void );
 
+signals:
+    void numShapesChanged( int numShapes );
+
 protected:
     std::list< shared_ptr< Shape > > collide( std::list< shared_ptr< Shape > > toCollide );
 

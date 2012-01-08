@@ -7,7 +7,7 @@
 #include "Vec3f.h"
 using namespace std;
 
-const float deltaT = 1.0 / 60;
+const float deltaT = 1.0 / 100;
 
 BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     QGLWidget( parent ),
@@ -45,8 +45,14 @@ list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > to
             if ( a.get() != b.get() && a->Intersects( *b ) )
             {
                 a->Collide( *b );
-                collided.push_back( a );
-                collided.push_back( b );
+                if ( !a->IsAlive() )
+                {
+                    collided.push_back( a );
+                }
+                if ( !b->IsAlive() )
+                {
+                    collided.push_back( b );
+                }
             }
         }
 
@@ -65,6 +71,19 @@ void BoxOfShapes::doPhysics( void )
     // move shapes
     move( mShapes );
 
+    // reduce health of very weak shapes
+    for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
+    {
+        float& hp = (*i)->mHP;
+        if ( hp < 0.05 )
+            hp -= 0.00005;
+
+        if ( hp < 0 )
+        {
+            toExplode.push_back( *i );
+        }
+    }
+
     // explode exploders
     auto newShapes = explode( toExplode );
 
@@ -74,9 +93,16 @@ void BoxOfShapes::doPhysics( void )
         mShapes.remove( *i );
     }
 
-    mShapes.splice( mShapes.end(), newShapes );
-
+    // add shapes
+    for ( auto shape = newShapes.begin(); shape != newShapes.end(); ++shape )
+    {
+        if ( mShapes.size() < 600 )
+        {
+            mShapes.push_back( *shape );
+        }
+    }
     update();
+    emit( numShapesChanged( mShapes.size() ) );
 }
 
 list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > toExplode )
@@ -85,16 +111,26 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
     for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
     {
         Shape& s = **i;
-        for ( int y = s.mCenter.Y - s.mRadius; y < s.mCenter.Y + s.mRadius; y++ )
+        if ( s.mRadius < 0.01 ) continue;
+        const float step = s.mRadius * 0.25;
+        for ( float y = s.mCenter.Y - s.mRadius; y < s.mCenter.Y + s.mRadius; y += step )
         {
-            for ( int x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x++ )
+            for ( float x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x += step )
             {
-                if ( rng() > 0.05 )
+                if ( rng() > 0.9 )
                 {
                     Vec3f color;
                     color.rand();
-                    shared_ptr< Circle > c( new Circle( Vec2f( x, y ), s.mRadius / 2, color ) );
+                    shared_ptr< Circle > c( new Circle( Vec2f( x, y ), step, color ) );
+
+                    Vec2f d;
+                    d = s.mCenter - c->mCenter;
+                    d *= -10;
+                    c->mVelocity = d + s.mVelocity;
+
                     newShapes.push_back( c );
+                    if ( newShapes.size() > 100 )
+                        return newShapes;
                 }
             }
         }
@@ -128,30 +164,30 @@ void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove )
 
         float& r = (*i)->mRadius;
 
-        const float g = .0986;
+        const float g = .986;
         yv -= deltaT * g;
 
-        x += xv;
-        y += yv;
+        x += xv * deltaT;
+        y += yv * deltaT;
 
         // bounce off of walls
         const float damping = 0.8;
-        if ( y + r >= 1 )
+        if ( y + r > 1 )
         {
             y = 1 - r;
             yv = -yv * damping;
         }
-        else if ( y - r <= -1 )
+        else if ( y - r < -1 )
         {
             y = -1 + r;
             yv = -yv * damping;
         }
-        if ( x + r >= 1 )
+        if ( x + r > 1 )
         {
             x = 1 - r;
             xv = -xv * damping;
         }
-        else if ( x - r <= -1 )
+        else if ( x - r < -1 )
         {
             x = -1 + r;
             xv = -xv * damping;

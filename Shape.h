@@ -20,9 +20,13 @@ public:
 
     virtual bool Intersects( const Circle& c ) const = 0;
 
+    virtual bool IsAlive( void ) const;
+
     virtual float Mass( void ) const = 0;
 
-    Vec2f mCenter;    
+    Vec2f mCenter;
+
+    float mHP;
 
     float mRadius;
 

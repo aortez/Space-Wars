@@ -93,13 +93,13 @@ float dot( const Vec2f& a, const Vec2f& b )
 Vec2f operator+( Vec2f a, const Vec2f& b )
 {
     a += b;
-    return b;
+    return a;
 }
 
 Vec2f operator+( Vec2f a, float s )
 {
     a += s;
-    return s;
+    return a;
 }
 
 
@@ -112,6 +112,12 @@ Vec2f operator-( Vec2f a, const Vec2f& b )
 Vec2f operator-( Vec2f a, float s )
 {
     a -= s;
+    return a;
+}
+
+Vec2f operator-( Vec2f a )
+{
+    a = Vec2f() - a;
     return a;
 }
 

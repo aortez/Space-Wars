@@ -1,5 +1,7 @@
 #include <cmath>
+#include <QDebug>
 #include <QGLWidget>
+#include <QString>
 #include "Circle.h"
 #include "Vec2f.h"
 
@@ -13,6 +15,7 @@ Circle::Circle( const Vec2f center, const float radius, const Vec3f color )
     : Shape( center, radius ),
       mColor( color )
 {
+    mHP = Mass() * 10;
 }
 
 void Circle::Draw( void ) const
@@ -66,6 +69,12 @@ void Circle::Collide( Circle& b )
     // the velocity vectors of the balls before the collision
     const Vec2f v1 = mVelocity;
     const Vec2f v2 = b.mVelocity;
+
+    // damage the circles based upon their momentum
+    const float P1 = m1 * v1.magnitude();
+    const float P2 = m2 * v2.magnitude();
+    mHP -= P1;
+    b.mHP -= P2;
 
     // The tangential vector of the collision plane
     const Vec2f Dt( Dn.Y, -Dn.X );

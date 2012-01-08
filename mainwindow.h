@@ -14,6 +14,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void setNumShapes( int numShapes );
+
 private:
     Ui::MainWindow *ui;
 };
