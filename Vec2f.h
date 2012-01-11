@@ -25,10 +25,6 @@ public:
     Vec2f& operator/=( const Vec2f& v );
     Vec2f& operator/=( const float s );
 
-//    Vec2f operator*( const Vec2f& v ) const;
-
-//    Vec2f operator/( const Vec2f& v ) const;
-
     float X;
     float Y;
 

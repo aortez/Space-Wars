@@ -15,7 +15,7 @@ Circle::Circle( const Vec2f center, const float radius, const Vec3f color )
     : Shape( center, radius ),
       mColor( color )
 {
-    mHP = Mass() * 10;
+    mHP = Mass() * 50;
 }
 
 void Circle::Draw( void ) const
@@ -99,11 +99,11 @@ bool Circle::Intersects( const Shape& s ) const
 
 bool Circle::Intersects( const Circle& c ) const
 {
-    return mCenter.distanceTo( c.mCenter ) <= ( mRadius + c.mRadius );
+    return mCenter.distanceTo( c.mCenter ) < ( mRadius + c.mRadius );
 }
 
 float Circle::Mass( void ) const
 {
     // a = pi * r^2
-    return mRadius * mRadius * PI;
+    return PI * mRadius * mRadius;
 }

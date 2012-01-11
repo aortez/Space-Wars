@@ -117,7 +117,7 @@ Vec2f operator-( Vec2f a, float s )
 
 Vec2f operator-( Vec2f a )
 {
-    a = Vec2f() - a;
+    a = 0 - a;
     return a;
 }
 

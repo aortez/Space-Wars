@@ -26,7 +26,7 @@ BoxOfShapes::~BoxOfShapes( void )
 {
 }
 
-void BoxOfShapes::AddShape( std::shared_ptr< Shape > shape )
+void BoxOfShapes::addShape( std::shared_ptr< Shape > shape )
 {
     mShapes.push_back( shape );
 }
@@ -131,14 +131,14 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
         {
             for ( float x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x += step )
             {
-                Vec2f newCenter( x, y );
+                const Vec2f newCenter( x, y );
                 if ( ( newCenter - s.mCenter ).magnitude() > s.mRadius ) continue;
 
                 if ( rng() > 0.5 )
                 {
                     Vec3f color;
                     color.rand();
-                    shared_ptr< Circle > c( new Circle( Vec2f( x, y ), step * 0.4, color ) );
+                    shared_ptr< Circle > c( new Circle( newCenter, step * 0.4, color ) );
 
                     Vec2f d;
                     d = s.mCenter - c->mCenter;
@@ -236,6 +236,12 @@ void BoxOfShapes::Render( void )
     {
         (*i)->Draw();
     }
+}
+
+void BoxOfShapes::resetWorld( void )
+{
+    mParticles.clear();
+    mShapes.clear();
 }
 
 void BoxOfShapes::resizeGL( int width, int height )

@@ -61,7 +61,7 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
 
     shape->mVelocity = v;
 
-    AddShape( shape );
+    addShape( shape );
 }
 
 void InteractiveBoxOfShapes::Render( void )

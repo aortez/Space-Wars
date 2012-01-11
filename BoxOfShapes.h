@@ -13,11 +13,12 @@ public:
 
     virtual ~BoxOfShapes( void );
 
-    void AddShape( std::shared_ptr< Shape > shape );
-
+    void addShape( std::shared_ptr< Shape > shape );
 
 public slots:
     void doPhysics( void );
+
+    void resetWorld( void );
 
 signals:
     void numShapesChanged( int numShapes );

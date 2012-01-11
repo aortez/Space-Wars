@@ -13,19 +13,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi( this );
 
     BoxOfShapes* display = new  InteractiveBoxOfShapes( this, 600, 600 );
-    this->setCentralWidget( display );
-    ui->mStatusBar->showMessage( "hello" );
-//    ui->mGridLayout->addWidget( display, 0, 0, 1, 1 );
+    ui->mGridLayout->addWidget( display );
+    ui->mStatusBar->showMessage( "status ok" );
+
     QObject::connect( display, SIGNAL( numShapesChanged( int ) ), this, SLOT( setNumShapes(int) ) );
+    QObject::connect( ui->mResetButton, SIGNAL( pressed() ), display, SLOT( resetWorld() ) );
     shared_ptr< Shape > circle(
                 new Circle(
                     Vec2f( 0, 0 ),
                     0.1,
                     Vec3f( 1, 0, 0 ) ) );
 
-    display->AddShape( circle );
-
-
+    display->addShape( circle );
 }
 
 MainWindow::~MainWindow( void )
