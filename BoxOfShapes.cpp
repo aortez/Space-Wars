@@ -33,7 +33,7 @@ void BoxOfShapes::AddShape( std::shared_ptr< Shape > shape )
 
 list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > toCollide )
 {
-    list< shared_ptr< Shape > > collided;
+    list< shared_ptr< Shape > > deadShapes;
 
     while( !toCollide.empty() )
     {
@@ -47,11 +47,11 @@ list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > to
                 a->Collide( *b );
                 if ( !a->IsAlive() )
                 {
-                    collided.push_back( a );
+                    deadShapes.push_back( a );
                 }
                 if ( !b->IsAlive() )
                 {
-                    collided.push_back( b );
+                    deadShapes.push_back( b );
                 }
             }
         }
@@ -60,7 +60,7 @@ list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > to
         toCollide.pop_front();
     }
 
-    return collided;
+    return deadShapes;
 }
 
 void BoxOfShapes::doPhysics( void )
@@ -112,7 +112,7 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
     {
         Shape& s = **i;
         if ( s.mRadius < 0.01 ) continue;
-        const float step = s.mRadius * 0.25;
+        const float step = s.mRadius * 0.5;
         for ( float y = s.mCenter.Y - s.mRadius; y < s.mCenter.Y + s.mRadius; y += step )
         {
             for ( float x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x += step )
