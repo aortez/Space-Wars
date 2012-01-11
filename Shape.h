@@ -28,6 +28,8 @@ public:
 
     float mHP;
 
+    bool mIsSolid;
+
     float mRadius;
 
     Vec2f mVelocity;

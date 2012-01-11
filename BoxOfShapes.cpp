@@ -70,17 +70,31 @@ void BoxOfShapes::doPhysics( void )
 
     // move shapes
     move( mShapes );
+    move( mParticles );
 
     // reduce health of very weak shapes
     for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
     {
         float& hp = (*i)->mHP;
         if ( hp < 0.05 )
-            hp -= 0.00005;
+            hp -= 0.000001;
 
-        if ( hp < 0 )
+        if ( hp <= 0 )
         {
             toExplode.push_back( *i );
+        }
+    }
+
+    // remove old particles
+    list< shared_ptr< Shape > > toRemove;
+    for( auto i = mParticles.begin(); i != mParticles.end(); ++i )
+    {
+        float& hp = (*i)->mHP;
+        hp -= 0.000001;
+
+        if ( hp <= 0 )
+        {
+            toRemove.push_back( *i );
         }
     }
 
@@ -108,29 +122,37 @@ void BoxOfShapes::doPhysics( void )
 list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > toExplode )
 {
     list< shared_ptr< Shape > > newShapes;
+    list< shared_ptr< Shape > > newParticles;
     for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
     {
         Shape& s = **i;
-        if ( s.mRadius < 0.01 ) continue;
         const float step = s.mRadius * 0.5;
         for ( float y = s.mCenter.Y - s.mRadius; y < s.mCenter.Y + s.mRadius; y += step )
         {
             for ( float x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x += step )
             {
-                if ( rng() > 0.9 )
+                Vec2f newCenter( x, y );
+                if ( ( newCenter - s.mCenter ).magnitude() > s.mRadius ) continue;
+
+                if ( rng() > 0.5 )
                 {
                     Vec3f color;
                     color.rand();
-                    shared_ptr< Circle > c( new Circle( Vec2f( x, y ), step, color ) );
+                    shared_ptr< Circle > c( new Circle( Vec2f( x, y ), step * 0.4, color ) );
 
                     Vec2f d;
                     d = s.mCenter - c->mCenter;
                     d *= -10;
                     c->mVelocity = d + s.mVelocity;
 
-                    newShapes.push_back( c );
-                    if ( newShapes.size() > 100 )
-                        return newShapes;
+                    if ( c->mRadius > 0.0025 )
+                    {
+                        newShapes.push_back( c );
+                    }
+                    else
+                    {
+                        newParticles.push_back( c );
+                    }
                 }
             }
         }

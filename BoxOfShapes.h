@@ -41,6 +41,8 @@ protected:
 
     std::list< shared_ptr< Shape > > mShapes;
 
+    std::list< shared_ptr< Shape > > mParticles;
+
     float mHeight;
 
     float mWidth;
