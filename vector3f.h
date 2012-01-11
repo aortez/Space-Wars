@@ -6,29 +6,42 @@
 #include "enum.h"
 
 class Vector3f {
-	
-private:
-	
+
 public:
-	Vector3f(float x, float y, float z);
+        float X, Y, Z;
+        Vector3f(const float x, const float y, const float z);
 	~Vector3f();
-	inline float getSum() {
-		return x + y + z;
+
+        inline float getSum() const{
+                return X + Y + Z;
 	}
-	float x, y, z;
-	float getMagnitude() const;
-	void multiplyByScalar(float scalar);
-	void divideByScalar(float scalar);
-	void normalize();
-	Vector3f operator/(const Vector3f& vector);
-	Vector3f operator/=(const Vector3f& vector);
-	Vector3f operator*=(const Vector3f& vector);
-	Vector3f operator*(const Vector3f& vector);
-	Vector3f operator+(const Vector3f& vector);
-	Vector3f operator+=(const Vector3f& vector);
-	Vector3f operator-(const Vector3f& vector);
-	Vector3f operator-=(const Vector3f& vector);
+
+        float getMagnitude() const;
+        void normalize() const;
+        //Float Operations
+        Vector3f operator/= (const float a);
+        Vector3f operator*= (const float a);
+        Vector3f operator+= (const float a);
+        Vector3f operator-= (const float a);
+
+        //Vector Operations
+        Vector3f operator/= (const Vector3f& vector);
+        Vector3f operator*= (const Vector3f& vector);
+        Vector3f operator+= (const Vector3f& vector);
+        Vector3f operator-= (const Vector3f& vector);
 };
+
+//-------Float-------
+
+Vector3f operator+ (Vector3f a, const float b);
+Vector3f operator- (Vector3f a, const float b);
+Vector3f operator/ (Vector3f a, const float b);
+Vector3f operator* (Vector3f a, const float b);
+//------Vector--------
+Vector3f operator+ (Vector3f a, const Vector3f& b);
+Vector3f operator- (Vector3f a, const Vector3f& b);
+Vector3f operator/ (Vector3f a, const Vector3f& b);
+Vector3f operator* (Vector3f a, const Vector3f& b);
 
 float compdist3f(const Vector3f& vec_a, const Vector3f& vec_b);
 
