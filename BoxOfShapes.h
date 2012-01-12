@@ -1,8 +1,6 @@
 #pragma once
-#include <QGLWidget>
-#include <GL/freeglut.h>
-#include <GL/glu.h>
 #include <list>
+#include <QGLWidget>
 #include "SharedPtr.h"
 #include "Shape.h"
 

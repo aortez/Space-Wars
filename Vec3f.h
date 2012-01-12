@@ -16,4 +16,5 @@ struct Vec3f
 
 private:
     float* mData;
+
 };

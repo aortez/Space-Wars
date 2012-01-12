@@ -1,10 +1,6 @@
 #include "vector3f.h"
 
-/**********************/
-/*  PUBLIC FUNCTIONS  */
-/**********************/
-
-Vector3f::Vector3f(float x, float y, float z) {
+Vector3f::Vector3f(const float x, const float y, const float z) {
         this->X = x;
         this->Y = y;
         this->Z = z;
@@ -24,14 +20,7 @@ float Vector3f::getMagnitude() const{
 		
 }
 
-void Vector3f::applyCrossProduct(const Vector3f &vec) {
-
-    this->X = (this->Y * vec.Z) - (this->Z * vec.Y);
-    this->Y = (this->Z * vec.X) - (this->X * vec.Z);
-    this->Z = (this->X * vec.Y) - (this->Y * vec.X);
-}
-
-void Vector3f::normalize() {
+void Vector3f::normalize() const {
     const float magnitude = getMagnitude();
 
     const bool notZero =
