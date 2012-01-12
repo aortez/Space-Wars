@@ -20,8 +20,7 @@ SOURCES += \
     InteractiveBoxOfShapes.cpp \
     Vec3f.cpp \
     Vec2f.cpp \
-    rand.cpp \
-    vector3f.cpp
+    rand.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -33,16 +32,8 @@ HEADERS += \
     InteractiveBoxOfShapes.h \
     Vec2f.h \
     Exploder.h \
-    rand.h \
-    vector3f.h \
-    enum.h
+    rand.h
 
 FORMS += mainwindow.ui
 
 QT += opengl
-
-LIBS += -lglut -lGLU
-
-INCLUDEPATH += -L/usr/lib/
-
-
