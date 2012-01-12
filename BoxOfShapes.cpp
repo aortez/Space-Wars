@@ -166,7 +166,7 @@ void BoxOfShapes::initializeGL( void )
     glClearDepth( 1.0f );
 
     glEnable( GL_BLEND );
-    glEnable( GL_MULTISAMPLE );
+    //glEnable( GL_MULTISAMPLE );
 
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_LINE_SMOOTH );
@@ -254,5 +254,6 @@ void BoxOfShapes::resizeGL( int width, int height )
     glLoadIdentity();
 
     gluPerspective( 45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 8.0f );
+
     glMatrixMode( GL_MODELVIEW );
 }

@@ -9,7 +9,7 @@ class Vector3f {
 
 public:
         float X, Y, Z;
-        Vector3f(const float x, const float y, const float z);
+        Vector3f(float x, float y, float z);
 	~Vector3f();
 
         inline float getSum() const{
@@ -17,7 +17,8 @@ public:
 	}
 
         float getMagnitude() const;
-        void normalize() const;
+        void applyCrossProduct(const Vector3f& vec);
+        void normalize();
         //Float Operations
         Vector3f operator/= (const float a);
         Vector3f operator*= (const float a);
