@@ -5,6 +5,8 @@ class Vec2f
 public:
     Vec2f( float x = 0, float y = 0 );
 
+    Vec2f( const Vec2f& v );
+
     float distanceTo( const Vec2f& v ) const;
 
     float magnitude( void ) const;

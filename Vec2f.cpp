@@ -8,6 +8,13 @@ Vec2f::Vec2f( const float x, const float y )
 {
 }
 
+Vec2f::Vec2f( const Vec2f& v )
+    : X( v.X ),
+      Y( v.Y ),
+      mData( &X )
+{
+}
+
 float Vec2f::distanceTo( const Vec2f& v ) const
 {
     return std::sqrt( ( v.X - X ) * ( v.X - X ) + ( v.Y - Y ) * (v.Y - Y ) );
