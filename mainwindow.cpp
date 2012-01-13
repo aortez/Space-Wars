@@ -19,11 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect( display, SIGNAL( numShapesChanged( int ) ), this, SLOT( setNumShapes(int) ) );
     QObject::connect( ui->mResetButton, SIGNAL( pressed() ), display, SLOT( resetWorld() ) );
-    shared_ptr<Shape> circle(
-                new Circle(
-                    Vec2f( 0, 0 ),
-                    0.1,
-                    Vec3f( 1, 0, 0 ) ) );
+
+    shared_ptr< Shape > circle( new Circle( Vec2f(), 0.1, Vec3f( 1, 0, 0 ) ) );
+    display->addShape( circle );
+
     /*std::shared_ptr<Shape> rect(
                      new Rect2f(
                         Vec2f( 0, 0 ),
@@ -34,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
                     )
                 );*/
     //shared_ptr< Shape > rect( new Rect2f() );
-    display->addShape( circle );
+
     //display->addShape( rect );
 }
 

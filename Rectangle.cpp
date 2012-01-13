@@ -5,7 +5,10 @@ Rectangle::Rectangle(
         const Vec2f center,
         const Vec2f dims,
         const Vec3f color )
-    : Shape( center, 0 ),
+    : Shape(
+          center,
+          ( dims * 0.5 ).magnitude() // bounding circle's radius is distance from center to corner
+          ),
       mColor( color ),
       mRadius( dims * 0.5 )
 {
@@ -44,7 +47,7 @@ void Rectangle::Collide( Circle& c )
 
 void Rectangle::Collide( Rectangle& r )
 {
-
+    // TODO
 }
 
 void Rectangle::Collide( Shape& s )
@@ -58,8 +61,17 @@ bool Rectangle::Intersects( const Circle& c ) const
 }
 
 bool Rectangle::Intersects( const Rectangle& r ) const
-{
-    return false; // TODO
+{    
+    const bool withinBoundsRadius = mCenter.distanceTo( r.mCenter ) < ( mBoundsRadius + r.mBoundsRadius );
+    if ( !withinBoundsRadius )
+    {
+        return false;
+    }
+    else
+    {
+        // TODO: iterate over corners and see if one lies within the other rectangle
+        return true;
+    }
 }
 
 bool Rectangle::Intersects( const Shape& s ) const

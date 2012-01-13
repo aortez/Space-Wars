@@ -4,7 +4,7 @@ Shape::Shape( Vec2f center, float radius )
     : mCenter( center ),
     mHP( 0 ),
     mIsSolid( true ),
-    mRadius( radius )
+    mBoundsRadius( radius )
 {
 }
 

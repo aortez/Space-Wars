@@ -80,14 +80,14 @@ void Rect2f::Draw( void ) const {
     mRadius =
         ( ( mWidthHeight->X * mWidthHeight ) + ( mWidthHeight->Y * mWidthHeight->Y ) ) / 2;*/
 
-    const int numPoints = mRadius * 1000;
+    const int numPoints = mBoundsRadius * 1000;
     glBegin( GL_POLYGON_SMOOTH );
     glColor3f( mColor.X, mColor.Y, mColor.Z );
 
-    for ( double i = 0; i < mRadius; i++ )
+    for ( double i = 0; i < mBoundsRadius; i++ )
     {
-        const float x = mCenter.X + std::cos( i / numPoints * 2 * PI ) * mRadius;
-        const float y = mCenter.Y + std::sin( i / numPoints * 2 * PI ) * mRadius;
+        const float x = mCenter.X + std::cos( i / numPoints * 2 * PI ) * mBoundsRadius;
+        const float y = mCenter.Y + std::sin( i / numPoints * 2 * PI ) * mBoundsRadius;
         glVertex3f( x, y, 0.0f );
     }
 

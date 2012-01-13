@@ -11,7 +11,8 @@ Circle::Circle(
         const float radius,
         const Vec3f color )
     : Shape( center, radius ),
-      mColor( color )
+      mColor( color ),
+      mRadius( radius )
 {
     mHP = Mass() * 50;
 }
@@ -87,7 +88,7 @@ void Circle::Collide( Circle& b )
 
 void Circle::Collide( Rectangle& r )
 {
-    // TODO
+    r.Collide( *this );
 }
 
 void Circle::Collide( Shape& s )

@@ -4,6 +4,7 @@
 #include <GL/glext.h>
 #include "SharedPtr.h"
 #include "Shape.h"
+#include "Vec2f.h"
 
 class BoxOfShapes
         : public QGLWidget
@@ -41,11 +42,9 @@ protected:
 
     void resizeGL( int width, int height );
 
+    Vec2f mDims;
+
     std::list< shared_ptr< Shape > > mShapes;
 
     std::list< shared_ptr< Shape > > mParticles;
-
-    float mHeight;
-
-    float mWidth;
 };

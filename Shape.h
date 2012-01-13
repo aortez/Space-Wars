@@ -10,7 +10,7 @@ class Shape
 {
 public:
 
-    Shape( Vec2f center = Vec2f(), float mRadius = 0 );
+    Shape( Vec2f center = Vec2f(), float boundsRadius = 0 );
 
     virtual ~Shape( void );
 
@@ -38,7 +38,7 @@ public:
 
     bool mIsSolid;
 
-    float mRadius;
+    float mBoundsRadius;
 
     Vec2f mVelocity;
 };

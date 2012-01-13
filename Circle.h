@@ -30,4 +30,5 @@ protected:
 
 private:
     Vec3f mColor;
+    float mRadius;
 };

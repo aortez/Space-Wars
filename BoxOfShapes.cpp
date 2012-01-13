@@ -11,14 +11,13 @@ const float deltaT = 1.0 / 100;
 
 BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     QGLWidget( parent ),
-    mHeight( height ),
-    mWidth( width )
+    mDims( height, width )
 {
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( doPhysics() ) );
     timer->start( deltaT * 1000 );
-    this->setFixedWidth( mWidth );
-    this->setFixedHeight( mHeight );
+    this->setFixedWidth( mDims.X );
+    this->setFixedHeight( mDims.Y );
     this->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
@@ -126,13 +125,13 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
     for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
     {
         Shape& s = **i;
-        const float step = s.mRadius * 0.5;
-        for ( float y = s.mCenter.Y - s.mRadius; y < s.mCenter.Y + s.mRadius; y += step )
+        const float step = s.mBoundsRadius * 0.5;
+        for ( float y = s.mCenter.Y - s.mBoundsRadius; y < s.mCenter.Y + s.mBoundsRadius; y += step )
         {
-            for ( float x = s.mCenter.X - s.mRadius; x < s.mCenter.X + s.mRadius; x += step )
+            for ( float x = s.mCenter.X - s.mBoundsRadius; x < s.mCenter.X + s.mBoundsRadius; x += step )
             {
                 const Vec2f newCenter( x, y );
-                if ( ( newCenter - s.mCenter ).magnitude() > s.mRadius ) continue;
+                if ( ( newCenter - s.mCenter ).magnitude() > s.mBoundsRadius ) continue;
 
                 if ( rng() > 0.5 )
                 {
@@ -145,7 +144,7 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
                     d *= -10;
                     c->mVelocity = d + s.mVelocity;
 
-                    if ( c->mRadius > 0.0025 )
+                    if ( c->mBoundsRadius > 0.0025 )
                     {
                         newShapes.push_back( c );
                     }
@@ -184,7 +183,7 @@ void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove )
         float& xv = (*i)->mVelocity.X;
         float& yv = (*i)->mVelocity.Y;
 
-        float& r = (*i)->mRadius;
+        float& r = (*i)->mBoundsRadius;
 
         const float g = .986;
         yv -= deltaT * g;
