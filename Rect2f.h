@@ -30,15 +30,15 @@ public:
 
     ~Rect2f();
 
-    inline const float GetWidth( void ) const {
+    float GetWidth( void ) const {
         return mWidth;
     }
 
-    inline const float GetHeight( void ) const {
+    float GetHeight( void ) const {
         return mHeight;
     }
 
-    inline const Vec2f* GetCorner( RectangleCorner rc ) const {
+    const Vec2f* GetCorner( RectangleCorner rc ) const {
         switch( rc ) {
         case RC_TOPLEFT:
             return mTopLeftCrnr;
