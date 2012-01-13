@@ -1,5 +1,6 @@
 #pragma once
 #include <QMainWindow>
+#include "Rect2f.h"
 
 namespace Ui {
     class MainWindow;

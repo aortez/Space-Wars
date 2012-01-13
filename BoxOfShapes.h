@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <QGLWidget>
+#include <GL/glext.h>
 #include "SharedPtr.h"
 #include "Shape.h"
 

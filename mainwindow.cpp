@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "Vec2f.h"
+#include "SharedPtr.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,13 +19,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect( display, SIGNAL( numShapesChanged( int ) ), this, SLOT( setNumShapes(int) ) );
     QObject::connect( ui->mResetButton, SIGNAL( pressed() ), display, SLOT( resetWorld() ) );
-    shared_ptr< Shape > circle(
+    shared_ptr<Shape> circle(
                 new Circle(
                     Vec2f( 0, 0 ),
                     0.1,
                     Vec3f( 1, 0, 0 ) ) );
-
+    /*std::shared_ptr<Shape> rect(
+                     new Rect2f(
+                        Vec2f( 0, 0 ),
+                        5.0f,
+                        5.0f,
+                        0,
+                        Vec3f( 1.0f, 1.0f, 0 )
+                    )
+                );*/
+    //shared_ptr< Shape > rect( new Rect2f() );
     display->addShape( circle );
+    //display->addShape( rect );
 }
 
 MainWindow::~MainWindow( void )
