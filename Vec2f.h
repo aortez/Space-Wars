@@ -27,6 +27,10 @@ public:
     Vec2f& operator/=( const Vec2f& v );
     Vec2f& operator/=( const float s );
 
+    void vertex2f( void ) const;
+
+    void vertex3f( void ) const;
+
     float X;
     float Y;
 

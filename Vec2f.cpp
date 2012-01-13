@@ -1,3 +1,4 @@
+#include <QGLWidget>
 #include <cmath>
 #include "Vec2f.h"
 
@@ -150,4 +151,14 @@ Vec2f operator/( Vec2f a, float s )
 {
     a /= s;
     return a;
+}
+
+void Vec2f::vertex2f( void ) const
+{
+    glVertex2f( X, Y );
+}
+
+void Vec2f::vertex3f( void ) const
+{
+    glVertex3f( X, Y, 0.0f );
 }

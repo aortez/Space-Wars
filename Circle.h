@@ -7,17 +7,21 @@ class Circle
         : public Shape
 {
 public:
-    Circle( void );
-
-    Circle( Vec2f center, float radius, const Vec3f color );
-
-    virtual void Collide( Shape& s );
+    Circle( Vec2f center = Vec2f(),
+            float radius = 0,
+            Vec3f color = Vec3f() );
 
     virtual void Collide( Circle& c );
 
-    virtual bool Intersects( const Shape& s ) const;
+    virtual void Collide( Rectangle& c );
+
+    virtual void Collide( Shape& s );    
 
     virtual bool Intersects( const Circle& c ) const;
+
+    virtual bool Intersects( const Rectangle& s ) const;
+
+    virtual bool Intersects( const Shape& s ) const;
 
     virtual float Mass( void ) const;
 

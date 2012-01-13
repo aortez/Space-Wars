@@ -22,7 +22,8 @@ SOURCES += \
     Vec2f.cpp \
     rand.cpp \
     Vec3.cpp \
-    Rect2f.cpp
+    Rect2f.cpp \
+    Rectangle.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -36,7 +37,8 @@ HEADERS += \
     #Exploder.h \
     rand.h \
     Vec3.h \
-    Rect2f.h
+    Rect2f.h \
+    Rectangle.h
 
 FORMS += mainwindow.ui
 

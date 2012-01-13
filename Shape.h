@@ -4,8 +4,7 @@
 const float PI = 3.14159265358979323846;
 
 class Circle;
-
-//class Rectangle;
+class Rectangle;
 
 class Shape
 {
@@ -19,13 +18,15 @@ public:
 
     virtual void Collide( Circle& c ) = 0;
 
-    //virtual void Collide( Rectangle& s ) = 0;
+    virtual void Collide( Rectangle& s ) = 0;
 
     virtual void Draw( void ) const = 0;
 
-    virtual bool Intersects( const Shape& s ) const = 0;
-
     virtual bool Intersects( const Circle& c ) const = 0;
+
+    virtual bool Intersects( const Rectangle& r ) const = 0;
+
+    virtual bool Intersects( const Shape& s ) const = 0;
 
     virtual bool IsAlive( void ) const;
 

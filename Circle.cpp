@@ -3,15 +3,13 @@
 #include <QGLWidget>
 #include <QString>
 #include "Circle.h"
+#include "Rectangle.h"
 #include "Vec2f.h"
 
-Circle::Circle( void )
-    : Shape(),
-      mColor()
-{
-}
-
-Circle::Circle( const Vec2f center, const float radius, const Vec3f color )
+Circle::Circle(
+        const Vec2f center,
+        const float radius,
+        const Vec3f color )
     : Shape( center, radius ),
       mColor( color )
 {
@@ -28,14 +26,9 @@ void Circle::Draw( void ) const
     {
         const float x = mCenter.X + std::cos( i / numPoints * 2 * PI ) * mRadius;
         const float y = mCenter.Y + std::sin( i / numPoints * 2 * PI ) * mRadius;
-        glVertex3f( x, y, 0.0f);
+        glVertex3f( x, y, 0.0f );
     }
     glEnd();
-}
-
-void Circle::Collide( Shape& s )
-{
-    s.Collide( *this );
 }
 
 void Circle::Collide( Circle& b )
@@ -92,14 +85,29 @@ void Circle::Collide( Circle& b )
     b.mVelocity = v2t - Dn * ( (m2 - m1) / M * v2n.magnitude() + 2 * m1 / M * v1n.magnitude() );
 }
 
-bool Circle::Intersects( const Shape& s ) const
+void Circle::Collide( Rectangle& r )
 {
-    return s.Intersects( *this );
+    // TODO
+}
+
+void Circle::Collide( Shape& s )
+{
+    s.Collide( *this );
 }
 
 bool Circle::Intersects( const Circle& c ) const
 {
     return mCenter.distanceTo( c.mCenter ) < ( mRadius + c.mRadius );
+}
+
+bool Circle::Intersects( const Rectangle& r ) const
+{
+    return r.Intersects( *this );
+}
+
+bool Circle::Intersects( const Shape& s ) const
+{
+    return s.Intersects( *this );
 }
 
 float Circle::Mass( void ) const

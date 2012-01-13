@@ -2,6 +2,7 @@
 #include <QMouseEvent>
 #include "Circle.h"
 #include "InteractiveBoxOfShapes.h"
+#include "Rectangle.h"
 #include "Vec3f.h"
 
 InteractiveBoxOfShapes::InteractiveBoxOfShapes( QWidget* parent, float width, float height )
@@ -49,11 +50,15 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     }
     const float radius = ( static_cast< double >( qrand() ) / RAND_MAX ) / 2;
 
-    shared_ptr< Shape > shape(
-                new Circle(
-                    center,
-                    radius,
-                    color ) );
+    shared_ptr< Shape > shape;
+    if ( event->button() == Qt::LeftButton )
+    {
+        shape.reset( new Circle( center, radius, color ) );
+    }
+    else
+    {
+        shape.reset( new Rectangle( center, Vec2f( radius, radius ), color ) );
+    }
     Vec2f v;
     v.X = ( ( mButtonCurrent.x() - mButtonDown.x() ) / float( width() ) );
     v.Y = -( ( mButtonCurrent.y() - mButtonDown.y() ) / float( height() ) );
