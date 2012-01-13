@@ -10,18 +10,25 @@ Rect2f::Rect2f( Vec2f center, float width, float height, float radius, Vec3f col
       mWidth( width ),
       mHeight( height )
 {
-    mTopRightCrnr = new Vec2f( mCenter.X - width * 0.5f, mCenter.Y - height * 0.5f );
-    mTopLeftCrnr = new Vec2f( mCenter.X + width * 0.5f, mCenter.Y + height * 0.5f );
-    mBottomLeftCrnr = new Vec2f( mCenter.X - width * 0.5f, mCenter.Y + height * 0.5f );
-    mBottomRightCrnr = new Vec2f( mCenter.X + width * 0.5f, mCenter.Y - height * 0.5f );
+    //mTopRightCrnr = new Vec2f( mCenter.X - width * 0.5f, mCenter.Y - height * 0.5f );
+   // mTopLeftCrnr = new Vec2f( mCenter.X + width * 0.5f, mCenter.Y + height * 0.5f );
+   // mBottomLeftCrnr = new Vec2f( mCenter.X - width * 0.5f, mCenter.Y + height * 0.5f );
+    //mBottomRightCrnr = new Vec2f( mCenter.X + width * 0.5f, mCenter.Y - height * 0.5f );
 }
 
 Rect2f::~Rect2f() {
-
+    delete mTopRightCrnr;
+    delete mTopLeftCrnr;
+    delete mBottomLeftCrnr;
+    delete mBottomRightCrnr;
 }
 
 void Rect2f::Collide( Shape &s ) {
     s.Collide( *this );
+}
+
+void Rect2f::UpdateCorners() {
+
 }
 
 void Rect2f::Collide( Rect2f &r ) {
