@@ -22,7 +22,6 @@ void Circle::Draw( void ) const
 {
     const int numPoints = mRadius * 1000;
     glBegin( GL_LINE_STRIP );
-    const float f = mHP / Mass();
     glColor3f( mColor.X, mColor.Y, mColor.Z );
 
     for ( double i = 0; i <= numPoints; i++ )
@@ -41,8 +40,8 @@ void Circle::Collide( Circle& b )
     float delta = 0;
     while ( delta == 0 )
     {
-        b.mCenter.X += rngp() * 0.01;
-        b.mCenter.Y += rngp() * 0.01;
+        b.mCenter.X += rngb() * 0.01;
+        b.mCenter.Y += rngb() * 0.01;
         Dn = mCenter - b.mCenter;
         delta = Dn.magnitude();
     }
