@@ -11,7 +11,7 @@ double rngp( void )
 
 double rngb( void )
 {
-    return ( rngp() - 1 ) * 2;
+    return ( rngp() - 0.5 ) * 2;
 }
 
 double randcollider( void )
