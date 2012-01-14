@@ -4,6 +4,7 @@
 #include <QString>
 #include "Circle.h"
 #include "Rectangle.h"
+#include "rand.h"
 #include "Vec2f.h"
 
 Circle::Circle(
@@ -21,6 +22,7 @@ void Circle::Draw( void ) const
 {
     const int numPoints = mRadius * 1000;
     glBegin( GL_LINE_STRIP );
+    const float f = mHP / Mass();
     glColor3f( mColor.X, mColor.Y, mColor.Z );
 
     for ( double i = 0; i <= numPoints; i++ )
@@ -39,8 +41,8 @@ void Circle::Collide( Circle& b )
     float delta = 0;
     while ( delta == 0 )
     {
-        b.mCenter.X += static_cast< double >( qrand() ) / RAND_MAX * 0.01;
-        b.mCenter.Y += static_cast< double >( qrand() ) / RAND_MAX * 0.01;
+        b.mCenter.X += rngp() * 0.01;
+        b.mCenter.Y += rngp() * 0.01;
         Dn = mCenter - b.mCenter;
         delta = Dn.magnitude();
     }
@@ -65,10 +67,10 @@ void Circle::Collide( Circle& b )
     const Vec2f v2 = b.mVelocity;
 
     // damage the circles based upon their momentum
-    const float P1 = m1 * v1.magnitude();
-    const float P2 = m2 * v2.magnitude();
-    mHP -= P1;
-    b.mHP -= P2;
+    const float p1 = m1 * v1.magnitude();
+    const float p2 = m2 * v2.magnitude();
+    mHP -= p1;
+    b.mHP -= p2;
 
     // The tangential vector of the collision plane
     const Vec2f Dt( Dn.Y, -Dn.X );
@@ -81,7 +83,7 @@ void Circle::Collide( Circle& b )
     const Vec2f v2n = Dn * dot( v2, Dn );
     const Vec2f v2t = Dt * dot( v2, Dt );
 
-    // calculate new velocity vectors of the balls, the tangential component stays the same, the normal component changes analog to the 1-Dimensional case
+    // calculate new velocity vectors of the balls, the tangential component stays the same, the normal component changes
     mVelocity = v1t + Dn * ( ( m1 - m2 ) / M * v1n.magnitude() + 2 * m2 / M * v2n.magnitude() );
     b.mVelocity = v2t - Dn * ( (m2 - m1) / M * v2n.magnitude() + 2 * m1 / M * v1n.magnitude() );
 }

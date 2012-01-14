@@ -125,7 +125,7 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
     for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
     {
         Shape& s = **i;
-        const float step = s.mBoundsRadius * 0.5;
+        const float step = s.mBoundsRadius;
         for ( float y = s.mCenter.Y - s.mBoundsRadius; y < s.mCenter.Y + s.mBoundsRadius; y += step )
         {
             for ( float x = s.mCenter.X - s.mBoundsRadius; x < s.mCenter.X + s.mBoundsRadius; x += step )
@@ -133,25 +133,21 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
                 const Vec2f newCenter( x, y );
                 if ( ( newCenter - s.mCenter ).magnitude() > s.mBoundsRadius ) continue;
 
-                if ( rng() > 0.5 )
+                Vec3f color;
+                color.rand();
+                shared_ptr< Circle > c( new Circle( newCenter, step * 0.2, color ) );
+
+                Vec2f d = s.mCenter - c->mCenter;
+                d *= -10;
+                c->mVelocity = d + s.mVelocity;
+
+                if ( c->mBoundsRadius > 0.0025 )
                 {
-                    Vec3f color;
-                    color.rand();
-                    shared_ptr< Circle > c( new Circle( newCenter, step * 0.4, color ) );
-
-                    Vec2f d;
-                    d = s.mCenter - c->mCenter;
-                    d *= -10;
-                    c->mVelocity = d + s.mVelocity;
-
-                    if ( c->mBoundsRadius > 0.0025 )
-                    {
-                        newShapes.push_back( c );
-                    }
-                    else
-                    {
-                        newParticles.push_back( c );
-                    }
+                    newShapes.push_back( c );
+                }
+                else
+                {
+                    newParticles.push_back( c );
                 }
             }
         }

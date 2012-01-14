@@ -22,7 +22,7 @@ float& Vec3f::operator[]( int i )
 
 void Vec3f::rand( void )
 {
-    X = rng();
-    Y = rng();
-    Z = rng();
+    X = rngp();
+    Y = rngp();
+    Z = rngp();
 }
