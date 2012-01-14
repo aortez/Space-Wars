@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QList>
+#include <QTime>
 #include <QTimer>
 #include "BoxOfShapes.h"
 #include "Circle.h"
@@ -11,7 +12,8 @@ const float deltaT = 1.0 / 100;
 
 BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     QGLWidget( parent ),
-    mDims( height, width )
+    mDims( height, width ),
+    mFpsTimer( new QTime )
 {
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( doPhysics() ) );
@@ -19,6 +21,8 @@ BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     this->setFixedWidth( mDims.X );
     this->setFixedHeight( mDims.Y );
     this->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+
+    mFpsTimer->start();
 }
 
 BoxOfShapes::~BoxOfShapes( void )
@@ -64,6 +68,12 @@ list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > to
 
 void BoxOfShapes::doPhysics( void )
 {
+    {
+        const int msElapsed = mFpsTimer->restart();
+        const int fps = 1000 / msElapsed;
+        emit fpsChanged( fps );
+    }
+
     // collide shapes
     auto toExplode = collide( mShapes );
 

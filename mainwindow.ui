@@ -22,7 +22,7 @@
      <rect>
       <x>0</x>
       <y>430</y>
-      <width>103</width>
+      <width>144</width>
       <height>181</height>
      </rect>
     </property>
@@ -33,6 +33,27 @@
         <string>Reset World</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="mFpsLabel">
+         <property name="text">
+          <string>FPS:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="mFpsLabelValue">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>

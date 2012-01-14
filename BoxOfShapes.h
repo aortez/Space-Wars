@@ -5,6 +5,7 @@
 #include "SharedPtr.h"
 #include "Shape.h"
 #include "Vec2f.h"
+class QTime;
 
 class BoxOfShapes
         : public QGLWidget
@@ -25,6 +26,8 @@ public slots:
 signals:
     void numShapesChanged( int numShapes );
 
+    void fpsChanged( int fps );
+
 protected:
     std::list< shared_ptr< Shape > > collide( std::list< shared_ptr< Shape > > toCollide );
 
@@ -43,6 +46,8 @@ protected:
     void resizeGL( int width, int height );
 
     Vec2f mDims;
+
+    shared_ptr< QTime > mFpsTimer;
 
     std::list< shared_ptr< Shape > > mShapes;
 
