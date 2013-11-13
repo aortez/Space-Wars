@@ -40,7 +40,7 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     mIsButtonDown = false;
 
     // map from [0,1] -> [-1,1]
-    Vec2f center = widgetPointToVec( event->posF() );
+    Vec2f center = widgetPointToVec( event->localPos() );
 
     // choose a random color
     Vec3f color;

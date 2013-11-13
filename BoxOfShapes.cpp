@@ -226,7 +226,6 @@ void BoxOfShapes::paintGL( void )
 {
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
-    gluOrtho2D( 0, width(), 0, height() );
     glClear( GL_COLOR_BUFFER_BIT );
 
     Render();
@@ -258,6 +257,5 @@ void BoxOfShapes::resizeGL( int width, int height )
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
 
-    gluPerspective( 45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 8.0f );
     glMatrixMode( GL_MODELVIEW );
 }
