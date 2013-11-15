@@ -36,9 +36,9 @@ void Circle::Draw( void ) const
 void Circle::Collide( Circle& b )
 {
     // compute distance between centers
-    Vec2f Dn;
-    float delta = 0;
-    while ( delta == 0 )
+    Vec2f Dn = mCenter - b.mCenter;
+    float delta = Dn.magnitude();
+    while ( delta == 0 ) // if circles are on top of each other, jitter em around
     {
         b.mCenter.X += rngb() * 0.01;
         b.mCenter.Y += rngb() * 0.01;
