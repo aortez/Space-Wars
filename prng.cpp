@@ -1,7 +1,7 @@
 #include <qglobal.h>
 #include <limits.h>
 #include "stdlib.h"
-#include "rand.h"
+#include "prng.h"
 
 double rngp( void )
 {

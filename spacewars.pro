@@ -14,11 +14,9 @@ SOURCES += \
     BoxOfShapes.cpp \
     Shape.cpp \
     InteractiveBoxOfShapes.cpp \
-    Vec3f.cpp \
     Vec2f.cpp \
-    rand.cpp \
-    Vec3.cpp \
-    Rectangle.cpp
+    Rectangle.cpp \
+    prng.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -26,12 +24,10 @@ HEADERS += \
     BoxOfShapes.h \
     Shape.h \
     SharedPtr.h \
-    Vec3f.h \
     InteractiveBoxOfShapes.h \
     Vec2f.h \
-    rand.h \
-    Vec3.h \
-    Rectangle.h
+    Rectangle.h \
+    prng.h
 
 FORMS += mainwindow.ui
 

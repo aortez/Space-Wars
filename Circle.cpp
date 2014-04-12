@@ -4,7 +4,7 @@
 #include <QString>
 #include "Circle.h"
 #include "Rectangle.h"
-#include "rand.h"
+#include "prng.h"
 #include "Vec2f.h"
 
 Circle::Circle(

@@ -4,7 +4,7 @@
 #include <QTimer>
 #include "BoxOfShapes.h"
 #include "Circle.h"
-#include "rand.h"
+//#include "rand.h"
 #include "Vec3f.h"
 using namespace std;
 

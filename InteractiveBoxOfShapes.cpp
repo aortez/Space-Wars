@@ -3,6 +3,7 @@
 #include "Circle.h"
 #include "InteractiveBoxOfShapes.h"
 #include "Rectangle.h"
+#include "prng.h"
 #include "Vec3f.h"
 
 InteractiveBoxOfShapes::InteractiveBoxOfShapes( QWidget* parent, float width, float height )
@@ -42,13 +43,10 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     // map from [0,1] -> [-1,1]
     Vec2f center = widgetPointToVec( event->localPos() );
 
-    // choose a random color
-    Vec3f color;
-    for ( int i = 0; i < 3; i++ )
-    {
-        color[ i ] = static_cast< double >( qrand() ) / RAND_MAX;
-    }
-    const float radius = ( static_cast< double >( qrand() ) / RAND_MAX ) / 2;
+	// choose a random color, random radiusR
+	Vec3f color;
+	color.rand();
+	const float radius = rngp() / 2;
 
     shared_ptr< Shape > shape;
     if ( event->button() == Qt::LeftButton )
