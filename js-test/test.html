@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <script type="application/javascript">
+    function run() {
+      draw();
+      doPhysics();
+      setTimeout(run, 0);
+    }
+    function draw() {
+      var canvas = document.getElementById("canvas");
+      if (canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0,0,150,150);
+
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.fillRect (x, y, 55, 50);
+
+        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+        ctx.fillRect (30, 30, 55, 50);
+           // Filled triangle
+    ctx.beginPath();
+    ctx.moveTo(25,25);
+    ctx.lineTo(105,25);
+    ctx.lineTo(25,105);
+    ctx.fill();
+
+    // Stroked triangle
+    ctx.beginPath();
+    ctx.moveTo(125,125);
+    ctx.lineTo(125,45);
+    ctx.lineTo(45,125);
+    ctx.closePath();
+    ctx.stroke();
+      }
+    }
+
+    x = 1;
+    y = 1;
+    d = 1;
+    dx = d;
+    dy = d;
+    width = 150;
+    height = 100;
+    function doPhysics() {
+      x += dx;
+      if ( x > width ) {
+        x = width - dx;
+        dx = -dx;
+      }
+      if ( x < 0 ) {
+        x = 0 + dx;
+        dx = -dx;
+      }
+    }
+  </script>
+ </head>
+ <body onload="run();">
+   <canvas id="canvas" width="150" height="150"></canvas>
+ </body>
+</html>
