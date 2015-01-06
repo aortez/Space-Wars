@@ -1,62 +1,81 @@
 <!DOCTYPE html>
 <html>
- <head>
-  <meta charset="utf-8"/>
-  <script type="application/javascript">
-    function run() {
-      draw();
-      doPhysics();
-      setTimeout(run, 0);
-    }
-    function draw() {
-      var canvas = document.getElementById("canvas");
-      if (canvas.getContext) {
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0,0,150,150);
 
-        ctx.fillStyle = "rgb(200,0,0)";
-        ctx.fillRect (x, y, 55, 50);
+<head>
+    <meta charset="utf-8" />
+    <script type="application/javascript">
+        var world_width = 1540;
+        var world_height = 600;
+        var g = 0.05;
+        var x = 1;
+        var y = 1;
+        var r = 25;
+        var d = 1;
+        var dx = d;
+        var dy = d;
+        
+        function start() {
+            init();
+            run();
+        }
+        
+        function init() {
+            var canvas = document.getElementById("canvas");
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                canvas.width = world_width;
+                canvas.height = world_height;
+            }
+        }
+        
+        function run() {
+            draw();
+            doPhysics();
+            setTimeout(run, 0);
+        }
 
-        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-        ctx.fillRect (30, 30, 55, 50);
-           // Filled triangle
-    ctx.beginPath();
-    ctx.moveTo(25,25);
-    ctx.lineTo(105,25);
-    ctx.lineTo(25,105);
-    ctx.fill();
+        function draw() {
+            var canvas = document.getElementById("canvas");
+            if (canvas.getContext) {
+                var ctx = canvas.getContext("2d");
+                canvas.width = world_width;
+                canvas.height = world_height;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
 
-    // Stroked triangle
-    ctx.beginPath();
-    ctx.moveTo(125,125);
-    ctx.lineTo(125,45);
-    ctx.lineTo(45,125);
-    ctx.closePath();
-    ctx.stroke();
-      }
-    }
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
 
-    x = 1;
-    y = 1;
-    d = 1;
-    dx = d;
-    dy = d;
-    width = 150;
-    height = 100;
-    function doPhysics() {
-      x += dx;
-      if ( x > width ) {
-        x = width - dx;
-        dx = -dx;
-      }
-      if ( x < 0 ) {
-        x = 0 + dx;
-        dx = -dx;
-      }
-    }
-  </script>
- </head>
- <body onload="run();">
-   <canvas id="canvas" width="150" height="150"></canvas>
- </body>
+        function doPhysics() {
+            x += dx;
+            dy += g;
+            y += dy;
+            if (x + r > world_width) {
+                x = world_width - r - dx;
+                dx = -dx;
+            }
+            if (x - r < 0) {
+                x = r + dx;
+                dx = -dx;
+            }
+            if (y + r > world_height) {
+                y = world_height - r - dy;
+                dy = -dy;
+                dy *= 0.9;
+            }
+            if (y - r < 0) {
+                y = r + dy;
+                dy = -dy;
+                dy *= 0.9;
+            }
+        }
+    </script>
+</head>
+
+<body onload="start();">
+    <canvas id="canvas" width="150" height="150"></canvas>
+</body>
+
 </html>
