@@ -11,28 +11,42 @@
         var y = 1;
         var r = 25;
         var d = 1;
-        var dx = d;
-        var dy = d;
-        var n = 10;
+        var n = 3;
+        
+        function Vec2(x,y) {
+            this.x = x;
+            this.y = y;
+        }
 
         var requestAnimationFrame = window.requestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.msRequestAnimationFrame;
 
-        function Ball(x, y) {
-            this.x = x;
-            this.y = y;
-            this.dx = d;
-            this.dy = d;
-            this.r = r;
+        function getRandomColor() {
+            color = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16)
+            return color;
         }
 
+        function Ball(x, y) {
+            this.center = new Vec2(x, y);
+            this.dv = new Vec2(d, d);
+            this.r = r;
+            this.fillStyle = getRandomColor();
+            this.x = function() {
+                return this.center.X;
+            }
+            this.y = function() {
+                return this.center.Y;
+            }
+        }
+        console.log("hello console");
         var balls = [];
 
         function start() {
             init();
             run();
+            draw();
         }
 
         function init() {
@@ -46,12 +60,11 @@
             for (var i = 0; i < n; i++) {
                 balls[i] = new Ball(Math.random() * canvas.width, Math.random() * canvas.height);
             }
-            draw();
         }
 
         function run() {
             doPhysics();
-            setTimeout(run, 0);
+            setTimeout(run, 1);
         }
 
         function draw() {
@@ -61,9 +74,10 @@
                 ctx.clearRect(0, 0, world_width, world_height);
                 for (var i = 0; i < balls.length; i++) {
                     b = balls[i];
+                    ctx.fillStyle = b.fillStyle;
                     ctx.beginPath();
-                    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                    ctx.stroke();
+                    ctx.arc(b.center.x, b.center.y, b.r, 0, Math.PI * 2);
+                    ctx.fill();
                     ctx.closePath();
                 }
             }
@@ -74,26 +88,26 @@
             for (var i = 0; i < balls.length; i++) {
                 b = balls[i];
 
-                b.dy += g;
-                b.x += b.dx;
-                b.y += b.dy;
-                if (b.x + b.r > world_width) {
-                    b.x = world_width - b.r - b.dx;
-                    b.dx = -b.dx;
+                b.dv.y += g;
+                b.center.x += b.dv.x;
+                b.center.y += b.dv.y;
+                if (b.center.x + b.r > world_width) {
+                    b.center.x = world_width - b.r - b.dv.x;
+                    b.dv.x = -b.dv.x;
                 }
-                if (b.x - b.r < 0) {
-                    b.x = b.r + b.dx;
-                    b.dx = -b.dx;
+                if (b.center.x - b.r < 0) {
+                    b.center.x = b.r + b.dv.x;
+                    b.dv.x = -b.dv.x;
                 }
-                if (b.y + b.r > world_height) {
-                    b.y = world_height - b.r - b.dy;
-                    b.dy = -b.dy;
-                    b.dy *= 0.9;
+                if (b.center.y + b.r > world_height) {
+                    b.center.y = world_height - b.r - b.dv.y;
+                    b.dv.y = -b.dv.y;
+                    b.dv.y *= 0.9;
                 }
-                if (b.y - b.r < 0) {
-                    b.y = b.r + b.dy;
-                    b.dy = -b.dy;
-                    b.dy *= 0.9;
+                if (b.center.y - b.r < 0) {
+                    b.center.y = b.r + b.dv.y;
+                    b.dv.y = -b.dv.y;
+                    b.dv.y *= 0.9;
                 }
             }
         }
