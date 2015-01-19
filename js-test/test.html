@@ -15,6 +15,11 @@
         var dy = d;
         var n = 10;
 
+        var requestAnimationFrame = window.requestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.msRequestAnimationFrame;
+
         function Ball(x, y) {
             this.x = x;
             this.y = y;
@@ -41,10 +46,10 @@
             for (var i = 0; i < n; i++) {
                 balls[i] = new Ball(Math.random() * canvas.width, Math.random() * canvas.height);
             }
+            draw();
         }
 
         function run() {
-            draw();
             doPhysics();
             setTimeout(run, 0);
         }
@@ -53,9 +58,7 @@
             var canvas = document.getElementById("canvas");
             if (canvas.getContext) {
                 var ctx = canvas.getContext("2d");
-//                canvas.width = world_width;
-//                canvas.height = world_height;
-                ctx.clearRect(0,0, ctx.width, ctx.height);
+                ctx.clearRect(0, 0, world_width, world_height);
                 for (var i = 0; i < balls.length; i++) {
                     b = balls[i];
                     ctx.beginPath();
@@ -64,6 +67,7 @@
                     ctx.closePath();
                 }
             }
+            requestAnimationFrame(draw);
         }
 
         function doPhysics() {
