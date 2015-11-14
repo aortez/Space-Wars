@@ -13,13 +13,9 @@ public:
 
     virtual void Collide( Circle& c );
 
-    virtual void Collide( Rectangle& c );
-
     virtual void Collide( Shape& s );    
 
     virtual bool Intersects( const Circle& c ) const;
-
-    virtual bool Intersects( const Rectangle& s ) const;
 
     virtual bool Intersects( const Shape& s ) const;
 

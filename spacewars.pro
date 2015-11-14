@@ -16,9 +16,7 @@ SOURCES += \
     InteractiveBoxOfShapes.cpp \
     Vec3f.cpp \
     Vec2f.cpp \
-    rand.cpp \
-    Vec3.cpp \
-    Rectangle.cpp
+	rand.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -30,8 +28,7 @@ HEADERS += \
     InteractiveBoxOfShapes.h \
     Vec2f.h \
     rand.h \
-    Vec3.h \
-    Rectangle.h
+	Vec3.h
 
 FORMS += mainwindow.ui
 

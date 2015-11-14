@@ -50,15 +50,8 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     }
     const float radius = ( static_cast< double >( qrand() ) / RAND_MAX ) / 2;
 
-    shared_ptr< Shape > shape;
-    if ( event->button() == Qt::LeftButton )
-    {
-        shape.reset( new Circle( center, radius, color ) );
-    }
-    else
-    {
-        shape.reset( new Rectangle( center, Vec2f( radius, radius ), color ) );
-    }
+    shared_ptr< Shape > shape( new Circle( center, radius, color ) );
+
     Vec2f v;
     v.X = ( ( mButtonCurrent.x() - mButtonDown.x() ) / float( width() ) );
     v.Y = -( ( mButtonCurrent.y() - mButtonDown.y() ) / float( height() ) );

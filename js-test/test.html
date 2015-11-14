@@ -12,11 +12,35 @@
         var r = 25;
         var d = 1;
         var n = 3;
-        
-        function Vec2(x,y) {
+
+        function Vec2(x, y) {
             this.x = x;
             this.y = y;
+            this.plus = function(other) {
+                this.x += other.x;
+                this.y += other.y;
+            }
+            this.minus = function(other) {
+                this.x -= other.x;
+                this.y -= other.y;
+            }
+            this.magnitude = function() {
+                var mag = Math.sqrt(x * x + y * y);
+                alert(mag);
+            }
         }
+        Vec2.prototype.getMinus = function() {
+//            return this._foo + " " + this._bar;
+            return new Vec2(this.x, this.y);
+        }
+}
+//                    this.getMinus = function(other) {
+////                return new Vec2(this).minus(other);
+//                var v2 = new Vec2(this.x, this.y);
+////                v2.x -= 1;
+//                alert(v2.center.x);
+//                return v2;
+//            }
 
         var requestAnimationFrame = window.requestAnimationFrame ||
             window.mozRequestAnimationFrame ||
@@ -85,12 +109,33 @@
         }
 
         function doPhysics() {
+            // collide balls
+            for (var i = 0; i < balls.length; i++) {
+                for (var j = i + 1; j < balls.length; j++) {
+                    b1 = balls[i];
+                    b2 = balls[j];
+                    
+                    // compute distance between centers
+//                    var Dn = b1.center.getMinus(b1.center);
+//                    alert(Dn.x);
+//                    var b2 = b1.center.getMinus(b2.center);
+//                    float delta = Dn.magnitude();
+//                    while (delta == 0) // if circles are on top of each other, jitter em around
+//                    {
+//                        b.mCenter.X += rngb() * 0.01;
+//                        b.mCenter.Y += rngb() * 0.01;
+//                        Dn = mCenter - b.mCenter;
+//                        delta = Dn.magnitude();
+//                    }
+                }
+            }
+
+            // move balls
             for (var i = 0; i < balls.length; i++) {
                 b = balls[i];
 
                 b.dv.y += g;
-                b.center.x += b.dv.x;
-                b.center.y += b.dv.y;
+                b.center.plus(b.dv);
                 if (b.center.x + b.r > world_width) {
                     b.center.x = world_width - b.r - b.dv.x;
                     b.dv.x = -b.dv.x;

@@ -3,7 +3,6 @@
 #include <QGLWidget>
 #include <QString>
 #include "Circle.h"
-#include "Rectangle.h"
 #include "rand.h"
 #include "Vec2f.h"
 
@@ -21,7 +20,8 @@ Circle::Circle(
 void Circle::Draw( void ) const
 {
     const int numPoints = mRadius * 1000;
-    glBegin( GL_LINE_STRIP );
+//    glBegin( GL_LINE_STRIP );
+    glBegin( GL_TRIANGLE_FAN );
     glColor3f( mColor.X, mColor.Y, mColor.Z );
 
     for ( double i = 0; i <= numPoints; i++ )
@@ -37,6 +37,7 @@ void Circle::Collide( Circle& b )
 {
     // compute distance between centers
     Vec2f Dn = mCenter - b.mCenter;
+
     float delta = Dn.magnitude();
     while ( delta == 0 ) // if circles are on top of each other, jitter em around
     {
@@ -58,8 +59,8 @@ void Circle::Collide( Circle& b )
     const float M = m1 + m2;
 
     // push the circles apart proportional to their mass
-    mCenter += ( mT * m2 / M );
-    b.mCenter -= ( mT * m1 / M  );
+    mCenter += mT * ( m2 / M );
+    b.mCenter -= mT * ( m1 / M  );
 
     // the velocity vectors of the balls before the collision
     const Vec2f v1 = mVelocity;
@@ -83,13 +84,8 @@ void Circle::Collide( Circle& b )
     const Vec2f v2t = Dt * dot( v2, Dt );
 
     // calculate new velocity vectors of the balls, the tangential component stays the same, the normal component changes
-    mVelocity = v1t + Dn * ( ( m1 - m2 ) / M * v1n.magnitude() + 2 * m2 / M * v2n.magnitude() );
-    b.mVelocity = v2t - Dn * ( (m2 - m1) / M * v2n.magnitude() + 2 * m1 / M * v1n.magnitude() );
-}
-
-void Circle::Collide( Rectangle& r )
-{
-    r.Collide( *this );
+    mVelocity = v1t + Dn * ( ( m1 - m2 ) / (M * v1n.magnitude() ) + 2 * m2 / M * v2n.magnitude() );
+    b.mVelocity = v2t - Dn * ( (m2 - m1) / ( M * v2n.magnitude() ) + 2 * m1 / M * v1n.magnitude() );
 }
 
 void Circle::Collide( Shape& s )
@@ -102,11 +98,6 @@ bool Circle::Intersects( const Circle& c ) const
     return mCenter.distanceTo( c.mCenter ) < ( mRadius + c.mRadius );
 }
 
-bool Circle::Intersects( const Rectangle& r ) const
-{
-    return r.Intersects( *this );
-}
-
 bool Circle::Intersects( const Shape& s ) const
 {
     return s.Intersects( *this );
@@ -114,6 +105,5 @@ bool Circle::Intersects( const Shape& s ) const
 
 float Circle::Mass( void ) const
 {
-    // a = pi * r^2
-    return PI * mRadius * mRadius;
+    return mRadius * mRadius;
 }

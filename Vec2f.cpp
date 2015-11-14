@@ -18,7 +18,9 @@ Vec2f::Vec2f( const Vec2f& v )
 
 float Vec2f::distanceTo( const Vec2f& v ) const
 {
-    return std::sqrt( ( v.X - X ) * ( v.X - X ) + ( v.Y - Y ) * (v.Y - Y ) );
+    const float a = v.X - X;
+    const float b = v.Y - Y;
+    return std::sqrt( a * a + b * b );
 }
 
 float Vec2f::magnitude( void ) const

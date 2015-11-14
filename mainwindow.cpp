@@ -13,29 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi( this );
 
-    BoxOfShapes* display = new  InteractiveBoxOfShapes( this, 600, 600 );
-    ui->mGridLayout->addWidget( display );
+    BoxOfShapes* world = new  InteractiveBoxOfShapes( this, 600, 600 );
+    ui->mGridLayout->addWidget( world );
     ui->mStatusBar->showMessage( "status ok" );
 
-    QObject::connect( display, SIGNAL( numShapesChanged( int ) ), this, SLOT( setNumShapes(int) ) );
-    QObject::connect( ui->mResetButton, SIGNAL( pressed() ), display, SLOT( resetWorld() ) );
-    QObject::connect( display, SIGNAL( fpsChanged( int ) ), ui->mFpsLabelValue, SLOT( setNum(int) ) );
+    QObject::connect( world, SIGNAL( numShapesChanged( int ) ), this, SLOT( setNumShapes(int) ) );
+    QObject::connect( ui->mResetButton, SIGNAL( pressed() ), world, SLOT( resetWorld() ) );
+    QObject::connect( world, SIGNAL( fpsChanged( int ) ), ui->mFpsLabelValue, SLOT( setNum(int) ) );
 
     shared_ptr< Shape > circle( new Circle( Vec2f(), 0.1, Vec3f( 1, 0, 0 ) ) );
-    display->addShape( circle );
-
-    /*std::shared_ptr<Shape> rect(
-                     new Rect2f(
-                        Vec2f( 0, 0 ),
-                        5.0f,
-                        5.0f,
-                        0,
-                        Vec3f( 1.0f, 1.0f, 0 )
-                    )
-                );*/
-    //shared_ptr< Shape > rect( new Rect2f() );
-
-    //display->addShape( rect );
+    world->addShape( circle );
 }
 
 MainWindow::~MainWindow( void )

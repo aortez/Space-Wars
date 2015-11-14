@@ -191,7 +191,7 @@ void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove )
 
         float& r = (*i)->mBoundsRadius;
 
-        const float g = .986;
+        const float g = 0.986;
         yv -= deltaT * g;
 
         x += xv * deltaT;
@@ -202,22 +202,22 @@ void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove )
         if ( y + r > 1 )
         {
             y = 1 - r;
-            yv = -yv * damping;
+            yv *= -1 * damping;
         }
         else if ( y - r < -1 )
         {
             y = -1 + r;
-            yv = -yv * damping;
+            yv *= -1 * damping;
         }
         if ( x + r > 1 )
         {
             x = 1 - r;
-            xv = -xv * damping;
+            xv *= -1 * damping;
         }
         else if ( x - r < -1 )
         {
             x = -1 + r;
-            xv = -xv * damping;
+            xv *= -1 * damping;
         }
     }
 }
