@@ -37,7 +37,7 @@ protected:
 
     void initializeGL( void );
 
-    void move( std::list< shared_ptr< Shape > >& toMove );
+    void move( std::list< shared_ptr< Shape > >& toMove, float deltaT );
 
     void paintGL( void );
 

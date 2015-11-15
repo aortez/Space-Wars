@@ -2,13 +2,16 @@
 #include <QList>
 #include <QTime>
 #include <QTimer>
+#include <cassert>
 #include "BoxOfShapes.h"
 #include "Circle.h"
 #include "rand.h"
 #include "Vec3f.h"
 using namespace std;
 
-const float deltaT = 1.0 / 100;
+const float FPS = 60;
+
+const float TIME_SCALE = 0.05;
 
 BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     QGLWidget( parent ),
@@ -17,7 +20,7 @@ BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
 {
     QTimer* timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( doPhysics() ) );
-    timer->start( deltaT * 1000 );
+    timer->start( 1.0 / FPS * 1000 );
     this->setFixedWidth( mDims.X );
     this->setFixedHeight( mDims.Y );
     this->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -68,6 +71,10 @@ list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > to
 
 void BoxOfShapes::doPhysics( void )
 {
+    static QTime timer;
+    const float deltaT = 0.001 * timer.elapsed() * TIME_SCALE;
+    timer.start();
+
     {
         const int msElapsed = mFpsTimer->restart();
         const int fps = 1000 / msElapsed;
@@ -78,8 +85,8 @@ void BoxOfShapes::doPhysics( void )
     auto toExplode = collide( mShapes );
 
     // move shapes
-    move( mShapes );
-    move( mParticles );
+    move( mShapes, deltaT );
+    move( mParticles, deltaT );
 
     // reduce health of very weak shapes
     for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
@@ -135,23 +142,22 @@ list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > t
     for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
     {
         Shape& s = **i;
-        const float step = s.mBoundsRadius;
+        const float step = s.mBoundsRadius * 0.5;
         for ( float y = s.mCenter.Y - s.mBoundsRadius; y < s.mCenter.Y + s.mBoundsRadius; y += step )
         {
             for ( float x = s.mCenter.X - s.mBoundsRadius; x < s.mCenter.X + s.mBoundsRadius; x += step )
             {
                 const Vec2f newCenter( x, y );
-                if ( ( newCenter - s.mCenter ).magnitude() > s.mBoundsRadius ) continue;
+                if ( newCenter.distanceTo(s.mCenter) > s.mBoundsRadius ) continue;
 
                 Vec3f color;
                 color.rand();
-                shared_ptr< Circle > c( new Circle( newCenter, step * 0.2, color ) );
+                shared_ptr< Circle > c( new Circle( newCenter, step * 0.20, color ) );
 
-                Vec2f d = s.mCenter - c->mCenter;
-                d *= -10;
-                c->mVelocity = d + s.mVelocity;
-
-                if ( c->mBoundsRadius > 0.0025 )
+                Vec2f d = c->mCenter - s.mCenter;
+                d *= 10;
+                c->mVelocity = d + s.mVelocity * 0.1;
+                if ( c->mBoundsRadius > 0.001 )
                 {
                     newShapes.push_back( c );
                 }
@@ -179,17 +185,20 @@ void BoxOfShapes::initializeGL( void )
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 }
 
-void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove )
+void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove, const float deltaT )
 {
     for( auto i = toMove.begin(); i != toMove.end(); ++i )
     {
-        float& x = (*i)->mCenter.X;
-        float& y = (*i)->mCenter.Y;
+        Shape& s = **i;
+        float& x = s.mCenter.X;
+        float& y = s.mCenter.Y;
 
-        float& xv = (*i)->mVelocity.X;
-        float& yv = (*i)->mVelocity.Y;
+        float& xv = s.mVelocity.X;
+        float& yv = s.mVelocity.Y;
+        assert( !isinf(xv) );
+        assert( !isinf(yv) );
 
-        float& r = (*i)->mBoundsRadius;
+        float& r = s.mBoundsRadius;
 
         const float g = 0.986;
         yv -= deltaT * g;

@@ -7,6 +7,8 @@ public:
 
     Vec2f( const Vec2f& v );
 
+    void clamp( void );
+
     float distanceTo( const Vec2f& v ) const;
 
     float magnitude( void ) const;

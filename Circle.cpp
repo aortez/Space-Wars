@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cmath>
 #include <QDebug>
 #include <QGLWidget>
@@ -14,13 +15,12 @@ Circle::Circle(
       mColor( color ),
       mRadius( radius )
 {
-    mHP = Mass() * 50;
+    mHP = Mass() * 200;
 }
 
 void Circle::Draw( void ) const
 {
     const int numPoints = mRadius * 1000;
-//    glBegin( GL_LINE_STRIP );
     glBegin( GL_TRIANGLE_FAN );
     glColor3f( mColor.X, mColor.Y, mColor.Z );
 
@@ -31,6 +31,18 @@ void Circle::Draw( void ) const
         glVertex3f( x, y, 0.0f );
     }
     glEnd();
+
+    glBegin( GL_LINE_STRIP );
+    glColor3f( 1, 1, 1 );
+
+    for ( double i = 0; i <= numPoints; i++ )
+    {
+        const float x = mCenter.X + std::cos( i / numPoints * 2 * PI ) * mRadius;
+        const float y = mCenter.Y + std::sin( i / numPoints * 2 * PI ) * mRadius;
+        glVertex3f( x, y, 0.0f );
+    }
+    glEnd();
+
 }
 
 void Circle::Collide( Circle& b )
@@ -86,6 +98,8 @@ void Circle::Collide( Circle& b )
     // calculate new velocity vectors of the balls, the tangential component stays the same, the normal component changes
     mVelocity = v1t + Dn * ( ( m1 - m2 ) / (M * v1n.magnitude() ) + 2 * m2 / M * v2n.magnitude() );
     b.mVelocity = v2t - Dn * ( (m2 - m1) / ( M * v2n.magnitude() ) + 2 * m1 / M * v1n.magnitude() );
+    mVelocity.clamp();
+    b.mVelocity.clamp();
 }
 
 void Circle::Collide( Shape& s )

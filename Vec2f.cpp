@@ -16,6 +16,19 @@ Vec2f::Vec2f( const Vec2f& v )
 {
 }
 
+void Vec2f::clamp( void )
+{
+    if ( isinf(X) )
+    {
+        X = 0;
+    }
+
+    if ( isinf(Y) )
+    {
+        Y = 0;
+    }
+}
+
 float Vec2f::distanceTo( const Vec2f& v ) const
 {
     const float a = v.X - X;
