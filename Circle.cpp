@@ -119,5 +119,6 @@ bool Circle::Intersects( const Shape& s ) const
 
 float Circle::Mass( void ) const
 {
-    return mRadius * mRadius;
+    const float mass = (mRadius * 1000) * (mRadius * 1000);
+    return mass;
 }

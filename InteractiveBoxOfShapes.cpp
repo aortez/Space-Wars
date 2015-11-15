@@ -1,3 +1,4 @@
+#include <cassert>
 #include <QDebug>
 #include <QMouseEvent>
 #include "Circle.h"
@@ -48,7 +49,7 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     {
         color[ i ] = static_cast< double >( qrand() ) / RAND_MAX;
     }
-    const float radius = ( static_cast< double >( qrand() ) / RAND_MAX ) / 2;
+    const float radius = ( static_cast< double >( qrand() ) / RAND_MAX );
 
     shared_ptr< Shape > shape( new Circle( center, radius, color ) );
 
