@@ -14,7 +14,10 @@ double rngb( void )
     return ( rngp() - 0.5 ) * 2;
 }
 
-double randcollider( void )
+double rngrange( double begin, double end )
 {
-    return static_cast< double >( qrand() ) / RAND_MAX * 0.01;
+    // generate [0,1], scale into range, then shift into begin offset
+    const double range = end - begin;
+    const double r = rngp() * range + begin;
+    return r;
 }

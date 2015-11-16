@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec2f.h"
+#include "Vec3f.h"
 
 const float PI = 3.14159265358979323846;
 
@@ -9,7 +10,7 @@ class Shape
 {
 public:
 
-    Shape( Vec2f center = Vec2f(), float boundsRadius = 0 );
+    Shape( Vec2f center = Vec2f(), float boundsRadius = 0, Vec3f color = Vec3f(1,1,1) );
 
     virtual ~Shape( void );
 
@@ -29,11 +30,13 @@ public:
 
     Vec2f mCenter;
 
+    Vec3f mColor;
+
     float mHP;
 
     bool mIsSolid;
 
-    float mBoundsRadius;
+    float mRadius;
 
     Vec2f mVelocity;
 };

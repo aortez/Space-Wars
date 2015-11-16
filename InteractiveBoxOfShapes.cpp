@@ -49,7 +49,7 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     {
         color[ i ] = static_cast< double >( qrand() ) / RAND_MAX;
     }
-    const float radius = ( static_cast< double >( qrand() ) / RAND_MAX );
+    const float radius = ( static_cast< double >( qrand() ) / RAND_MAX ) * 0.5;
 
     shared_ptr< Shape > shape( new Circle( center, radius, color ) );
 
@@ -57,6 +57,13 @@ void InteractiveBoxOfShapes::mouseReleaseEvent ( QMouseEvent* event )
     v.X = ( ( mButtonCurrent.x() - mButtonDown.x() ) / float( width() ) );
     v.Y = -( ( mButtonCurrent.y() - mButtonDown.y() ) / float( height() ) );
     v *= 2;
+
+    while (v.magnitude() < 0.001)
+    {
+       qDebug() << "looping" << endl;
+        v.X = static_cast< double >( qrand() ) / RAND_MAX;
+        v.Y = static_cast< double >( qrand() ) / RAND_MAX;
+    }
 
     shape->mVelocity = v;
 

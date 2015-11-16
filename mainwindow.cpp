@@ -21,8 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect( ui->mResetButton, SIGNAL( pressed() ), world, SLOT( resetWorld() ) );
     QObject::connect( world, SIGNAL( fpsChanged( int ) ), ui->mFpsLabelValue, SLOT( setNum(int) ) );
 
-    shared_ptr< Shape > circle( new Circle( Vec2f(), 0.1, Vec3f( 1, 0, 0 ) ) );
-    world->addShape( circle );
+    world->scenario1();
 }
 
 MainWindow::~MainWindow( void )

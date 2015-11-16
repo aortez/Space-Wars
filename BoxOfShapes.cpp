@@ -9,9 +9,14 @@
 #include "Vec3f.h"
 using namespace std;
 
+ // scalar for velocity of new particles based on distance from center
+const float EXPLODE_V_FACTOR = 10;
+
 const float FPS = 60;
 
-const float TIME_SCALE = 0.05;
+const int MAX_SHAPES = 800;
+
+const float TIME_SCALE = 0.1;
 
 BoxOfShapes::BoxOfShapes( QWidget* parent, float width, float height ) :
     QGLWidget( parent ),
@@ -37,6 +42,22 @@ void BoxOfShapes::addShape( std::shared_ptr< Shape > shape )
     mShapes.push_back( shape );
 }
 
+void BoxOfShapes::scenario0( void )
+{
+    shared_ptr< Shape > circle( new Circle( Vec2f(), 0.1, Vec3f( 1, 0, 0 ) ) );
+    addShape( circle );
+}
+
+void BoxOfShapes::scenario1( void )
+{
+    shared_ptr< Shape > a( new Circle( Vec2f( -0.1, 0 ), 0.1, Vec3f( 0, 1, 0 ) ) );
+    a->mVelocity.X = 2;
+
+    shared_ptr< Shape > b( new Circle( Vec2f( 0.5, 0 ), 0.1, Vec3f( 1, 0, 0 ) ) );
+    addShape( a );
+    addShape( b );
+}
+
 list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > toCollide )
 {
     list< shared_ptr< Shape > > deadShapes;
@@ -45,25 +66,31 @@ list< shared_ptr< Shape > > BoxOfShapes::collide( list< shared_ptr< Shape > > to
     {
         // every shape 'a' must be collided with every other shape 'b'
         shared_ptr< Shape > a = *toCollide.begin();
+
+        // after colliding 'a' with every other shape, take it out of our 'toCollide' list
+        toCollide.pop_front();
+
+        // if shape is already dead then don't collide it
+        if ( !a->IsAlive() ) continue;
+
         for( auto i = toCollide.begin(); i != toCollide.end(); ++i )
         {
             shared_ptr< Shape > b = *i;
+            if ( !b->IsAlive() ) continue;
             if ( a.get() != b.get() && a->Intersects( *b ) )
             {
                 a->Collide( *b );
-                if ( !a->IsAlive() )
-                {
-                    deadShapes.push_back( a );
-                }
                 if ( !b->IsAlive() )
                 {
                     deadShapes.push_back( b );
                 }
+                if ( !a->IsAlive() )
+                {
+                    deadShapes.push_back( a );
+                    continue;
+                }
             }
         }
-
-        // after colliding 'a' with every other shape, take it out of our 'toCollide' list
-        toCollide.pop_front();
     }
 
     return deadShapes;
@@ -81,41 +108,17 @@ void BoxOfShapes::doPhysics( void )
         emit fpsChanged( fps );
     }
 
-    // collide shapes
-    auto toExplode = collide( mShapes );
-
     // move shapes
     move( mShapes, deltaT );
     move( mParticles, deltaT );
 
-    // reduce health of very weak shapes
-    for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
-    {
-        float& hp = (*i)->mHP;
-        if ( hp < 0.05 )
-            hp -= 0.000001;
-
-        if ( hp <= 0 )
-        {
-            toExplode.push_back( *i );
-        }
-    }
-
-    // remove old particles
-    list< shared_ptr< Shape > > toRemove;
-    for( auto i = mParticles.begin(); i != mParticles.end(); ++i )
-    {
-        float& hp = (*i)->mHP;
-        hp -= 0.000001;
-
-        if ( hp <= 0 )
-        {
-            toRemove.push_back( *i );
-        }
-    }
+    // collide shapes
+    auto toExplode = collide( mShapes );
 
     // explode exploders
-    auto newShapes = explode( toExplode );
+    list< shared_ptr< Shape > > newShapes;
+    list< shared_ptr< Shape > > newParticles;
+    explode( toExplode, newShapes, newParticles );
 
     // remove exploders from world
     for( auto i = toExplode.begin(); i != toExplode.end(); ++i )
@@ -123,10 +126,29 @@ void BoxOfShapes::doPhysics( void )
         mShapes.remove( *i );
     }
 
+    // remove old particles
+    for ( auto i = mParticles.begin(); i != mParticles.end();)
+    {
+        Shape& p = (**i);
+        p.mHP -= 15;
+        if ( p.mHP <= 0 )
+        {
+            i = mParticles.erase(i);
+            qDebug() << "**********  removed a particle *************" << endl;
+        }
+        else
+        {
+            ++i;
+        }
+    }
+
+    // add new particles
+    mParticles.insert( mParticles.end(), newParticles.begin(), newParticles.end() );
+
     // add shapes
     for ( auto shape = newShapes.begin(); shape != newShapes.end(); ++shape )
     {
-        if ( mShapes.size() < 600 )
+        if ( mShapes.size() < MAX_SHAPES )
         {
             mShapes.push_back( *shape );
         }
@@ -135,45 +157,73 @@ void BoxOfShapes::doPhysics( void )
     emit( numShapesChanged( mShapes.size() ) );
 }
 
-list< shared_ptr < Shape > > BoxOfShapes::explode( list< shared_ptr< Shape > > toExplode )
+float ctc(float value) {
+    const float a = 0.1f;
+    value *= rngrange(1 - a, 1 + a);
+    value = min(value, 1.0f);
+    value = max(value, 0.0f);
+    return value;
+}
+
+void BoxOfShapes::explode(
+        list< shared_ptr< Shape > >& toExplode,
+        list< shared_ptr< Shape > >& newShapes,
+        list< shared_ptr< Shape > >& newParticles )
 {
-    list< shared_ptr< Shape > > newShapes;
-    list< shared_ptr< Shape > > newParticles;
     for ( auto i = toExplode.begin(); i != toExplode.end(); ++i )
     {
-        Shape& s = **i;
-        const float step = s.mBoundsRadius * 0.5;
-        for ( float y = s.mCenter.Y - s.mBoundsRadius; y < s.mCenter.Y + s.mBoundsRadius; y += step )
+        Shape& parent = **i;
+        const float n = 5;
+        for (float dy = parent.mCenter.Y - parent.mRadius; dy < parent.mCenter.Y + parent.mRadius; dy += parent.mRadius / n)
         {
-            for ( float x = s.mCenter.X - s.mBoundsRadius; x < s.mCenter.X + s.mBoundsRadius; x += step )
+            for (float dx = parent.mCenter.X - parent.mRadius; dx < parent.mCenter.X + parent.mRadius; dx += parent.mRadius / n)
             {
-                const Vec2f newCenter( x, y );
-                if ( newCenter.distanceTo(s.mCenter) > s.mBoundsRadius ) continue;
+                const Vec2f newCenter( dx, dy );
+                if ( newCenter.distanceTo(parent.mCenter) > parent.mRadius ) continue;
 
+                // determine particle color
                 Vec3f color;
                 color.rand();
-                shared_ptr< Circle > c( new Circle( newCenter, step * 0.20, color ) );
+                color.X = ctc(parent.mColor.X);
+                color.Y = ctc(parent.mColor.Y);
+                color.Z = ctc(parent.mColor.Z);
 
-                Vec2f d = c->mCenter - s.mCenter;
-                d *= 10;
-                c->mVelocity = d + s.mVelocity * 0.1;
-                if ( c->mBoundsRadius > 0.001 )
+                // radius
+                const float r = rngrange(0, parent.mRadius / n * 0.5f);
+
+                // create particle
+                shared_ptr< Circle > c( new Circle( newCenter, r, color ) );
+
+                // modify velocity...
+                // scale based upon distance from center
+                Vec2f d = c->mCenter - parent.mCenter;
+                d *= EXPLODE_V_FACTOR;
+
+                // base upon parent's velocity
+                c->mVelocity = d + parent.mVelocity * 0.2;
+
+                // add jitter
+                const float a = 0.2;
+                c->mVelocity.X *= rngrange( -a, a);
+                c->mVelocity.Y *= rngrange( -a, a);
+
+                // create as either a new shape or a particle
+                if ( c->mRadius > 0.005 )
                 {
                     newShapes.push_back( c );
                 }
-                else
+                else if ( c->mRadius > 0.001 )
                 {
                     newParticles.push_back( c );
                 }
             }
         }
     }
-    return newShapes;
 }
 
 void BoxOfShapes::initializeGL( void )
 {
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+    glClearColor( 0.01f, 0.01f, 0.3f, 0.0f );
     glClearDepth( 1.0f );
 
     glEnable( GL_BLEND );
@@ -198,9 +248,9 @@ void BoxOfShapes::move( std::list< shared_ptr< Shape > >& toMove, const float de
         assert( !isinf(xv) );
         assert( !isinf(yv) );
 
-        float& r = s.mBoundsRadius;
+        float& r = s.mRadius;
 
-        const float g = 0.986;
+        const float g = 9.86;
         yv -= deltaT * g;
 
         x += xv * deltaT;
@@ -246,6 +296,11 @@ void BoxOfShapes::Render( void )
     glLoadIdentity();
 
     for( auto i = mShapes.begin(); i != mShapes.end(); ++i )
+    {
+        (*i)->Draw();
+    }
+
+    for( auto i = mParticles.begin(); i != mParticles.end(); ++i )
     {
         (*i)->Draw();
     }

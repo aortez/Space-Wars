@@ -23,8 +23,4 @@ public:
 
 protected:
     virtual void Draw( void ) const;
-
-private:
-    Vec3f mColor;
-    float mRadius;
 };

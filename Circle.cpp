@@ -11,9 +11,7 @@ Circle::Circle(
         const Vec2f center,
         const float radius,
         const Vec3f color )
-    : Shape( center, radius ),
-      mColor( color ),
-      mRadius( radius )
+    : Shape( center, radius, color )
 {
     mHP = Mass() * 200;
 }
@@ -32,8 +30,10 @@ void Circle::Draw( void ) const
     }
     glEnd();
 
+    if ( mRadius < 0.005 ) return;
+
     glBegin( GL_LINE_STRIP );
-    glColor3f( 1, 1, 1 );
+    glColor3f( 0, 0, 0 );
 
     for ( double i = 0; i <= numPoints; i++ )
     {
@@ -78,12 +78,6 @@ void Circle::Collide( Circle& b )
     const Vec2f v1 = mVelocity;
     const Vec2f v2 = b.mVelocity;
 
-    // damage the circles based upon their momentum
-    const float p1 = m1 * v1.magnitude();
-    const float p2 = m2 * v2.magnitude();
-    mHP -= p1;
-    b.mHP -= p2;
-
     // The tangential vector of the collision plane
     const Vec2f Dt( Dn.Y, -Dn.X );
 
@@ -100,6 +94,12 @@ void Circle::Collide( Circle& b )
     b.mVelocity = v2t - Dn * ( (m2 - m1) / ( M * v2n.magnitude() ) + 2 * m1 / M * v1n.magnitude() );
     mVelocity.clamp();
     b.mVelocity.clamp();
+
+    // damage the circles based upon their change in direction X mass
+    const float p1Damage = m1 * v1.distanceTo(mVelocity);
+    const float p2Damage = m2 * v2.distanceTo(b.mVelocity);
+    mHP -= p1Damage;
+    b.mHP -= p2Damage;
 }
 
 void Circle::Collide( Shape& s )
@@ -119,6 +119,6 @@ bool Circle::Intersects( const Shape& s ) const
 
 float Circle::Mass( void ) const
 {
-    const float mass = (mRadius * 1000) * (mRadius * 1000);
+    const float mass = pow( mRadius * 1000, 2 );
     return mass;
 }

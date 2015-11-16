@@ -18,6 +18,9 @@ public:
 
     void addShape( std::shared_ptr< Shape > shape );
 
+    void scenario0( void );
+    void scenario1( void );
+
 public slots:
     void doPhysics( void );
 
@@ -31,7 +34,10 @@ signals:
 protected:
     std::list< shared_ptr< Shape > > collide( std::list< shared_ptr< Shape > > toCollide );
 
-    std::list< shared_ptr< Shape > > explode( std::list< shared_ptr< Shape > > toExplode );
+    void explode(
+            std::list< shared_ptr< Shape > >& toExplode,
+            std::list< shared_ptr< Shape > >& newShapes,
+            std::list< shared_ptr< Shape > >& newParticles );
 
     int heightForWidth( int w ) { return w; }
 

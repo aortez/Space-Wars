@@ -1,10 +1,11 @@
 #include "Shape.h"
 
-Shape::Shape( Vec2f center, float radius )
+Shape::Shape( Vec2f center, float radius, Vec3f color )
     : mCenter( center ),
+    mColor( color ),
     mHP( 0 ),
     mIsSolid( true ),
-    mBoundsRadius( radius )
+    mRadius( radius )
 {
 }
 
